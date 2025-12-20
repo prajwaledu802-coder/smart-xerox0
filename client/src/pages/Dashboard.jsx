@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import useStore from '../store/useStore';
 import Button from '../components/ui/Button';
-import { Plus, Home, Briefcase, User, FileText, Wallet, CheckCircle, TrendingUp, Clock, Download, MessageCircle, Phone, Sun, Moon } from 'lucide-react';
+import { Plus, Home, Briefcase, User, Users, FileText, Wallet, CheckCircle, TrendingUp, Clock, Download, MessageCircle, Phone, Sun, Moon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BottomNav from '../components/BottomNav';
 import useThemeStore from '../store/useThemeStore';
