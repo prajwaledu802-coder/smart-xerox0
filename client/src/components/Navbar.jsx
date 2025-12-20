@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useStore from '../store/useStore'; // Auth Store
 import useThemeStore from '../store/useThemeStore'; // THEME Store
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, LogOut, User } from 'lucide-react';
+import { Sun, Moon, LogOut, User, Globe, ChevronDown } from 'lucide-react';
 import i18n from '../i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +13,7 @@ const Navbar = () => {
     const { theme, toggleTheme } = useThemeStore(); // Theme
     const navigate = useNavigate();
     const [showGuide, setShowGuide] = useState(true);
+    const [showLang, setShowLang] = useState(false);
 
     useEffect(() => {
         setShowGuide(true);
@@ -46,28 +47,51 @@ const Navbar = () => {
 
                 {/* Actions */}
                 <div className="flex items-center gap-4">
-                    {/* Language Pill */}
-                    <div className="relative group">
-                        <select
-                            className="appearance-none bg-gray-100/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full py-1.5 pl-3 pr-8 text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 outline-none cursor-pointer hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors"
-                            onChange={(e) => {
-                                const lang = e.target.value;
-                                i18n.changeLanguage(lang);
-                                useStore.getState().setLanguage(lang);
-                            }}
-                            defaultValue={i18n.language || "en"}
+                    {/* Custom Language Dropdown */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowLang(!showLang)}
+                            className="flex items-center gap-2 bg-gray-100/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full py-1.5 pl-3 pr-3 text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors"
                         >
-                            <option value="en">ENG</option>
-                            <option value="hi">HIN</option>
-                            <option value="bn">BEN</option>
-                            <option value="te">TEL</option>
-                            <option value="mr">MAR</option>
-                            <option value="ta">TAM</option>
-                            <option value="kn">KAN</option>
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-gray-400"></div>
-                        </div>
+                            <Globe size={14} className="text-blue-500" />
+                            <span>{i18n.language || "en"}</span>
+                            <ChevronDown size={14} className={`transition-transform duration-200 ${showLang ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        <AnimatePresence>
+                            {showLang && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="absolute top-full mt-2 right-0 w-32 py-2 bg-white/90 dark:bg-black/90 backdrop-blur-xl border border-gray-100 dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-50"
+                                >
+                                    {[
+                                        { code: 'en', label: 'English' },
+                                        { code: 'hi', label: 'Hindi' },
+                                        { code: 'bn', label: 'Bengali' },
+                                        { code: 'te', label: 'Telugu' },
+                                        { code: 'mr', label: 'Marathi' },
+                                        { code: 'ta', label: 'Tamil' },
+                                        { code: 'kn', label: 'Kannada' }
+                                    ].map((lang) => (
+                                        <button
+                                            key={lang.code}
+                                            onClick={() => {
+                                                i18n.changeLanguage(lang.code);
+                                                useStore.getState().setLanguage(lang.code);
+                                                setShowLang(false);
+                                            }}
+                                            className="w-full text-left px-4 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-white/10 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center justify-between group"
+                                        >
+                                            {lang.label}
+                                            {i18n.language === lang.code && <motion.div layoutId="activeLang" className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
 
                     {/* Theme Toggle & Helper Popup */}

@@ -33,7 +33,7 @@ const Landing = () => {
                     <div className="absolute top-[40%] -right-[10%] w-[40vw] h-[40vw] bg-purple-100 dark:bg-purple-600/10 rounded-full blur-[120px] animate-pulse delay-75 opacity-70"></div>
                 </div>
 
-                <div className="container mx-auto px-6 relative z-10 text-center">
+                <div className="w-full md:container md:mx-auto px-3 md:px-6 relative z-10 text-center">
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
@@ -130,7 +130,7 @@ const Landing = () => {
 
             {/* PRICING SECTION */}
             <section id="pricing" className="py-16 md:py-32 relative bg-gray-50 dark:bg-transparent">
-                <div className="container mx-auto px-6">
+                <div className="w-full md:container md:mx-auto px-3 md:px-6">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -225,7 +225,7 @@ const Landing = () => {
 
             {/* FEATURES / SERVICES SECTION */}
             <section className="py-16 md:py-24 bg-white dark:bg-[#0a0a0a]">
-                <div className="container mx-auto px-6">
+                <div className="w-full md:container md:mx-auto px-3 md:px-6">
                     <div className="grid md:grid-cols-3 gap-12">
                         {[
                             { icon: Zap, title: t('lightning_fast') || "Lightning Fast", desc: t('fast_desc') || "Order online and collect before you even reach the shop." },
