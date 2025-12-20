@@ -13,21 +13,22 @@ const getDatabaseUrl = () => {
         url = url.replace(/^psql\s*/, '');
     }
 
-    // 3. Remove surrounding quotes (single or double)
+    // 3. Remove surrounding quotes
     url = url.replace(/^['"]+|['"]+$/g, '');
 
-    // 4. Debug Log (Redacted)
-    if (url.length > 10) {
-        console.log(`[Config] Using DATABASE_URL starting with: ${url.substring(0, 15)}...`);
-    } else {
-        console.error('[Config] DATABASE_URL is suspiciously short!');
+    // 4. Validate Protocol
+    if (!url.startsWith('postgres://') && !url.startsWith('postgresql://')) {
+        console.error(`[Config] ERROR: DATABASE_URL is invalid (missing protocol). Starts with: ${url.substring(0, 10)}...`);
+        return null; // Fallback to SQLite
     }
 
+    console.log(`[Config] Using valid Cloud DB URL.`);
     return url;
 };
 
 const dbUrl = getDatabaseUrl();
-const isProduction = process.env.NODE_ENV === 'production' || !!dbUrl;
+// Only use Production mode if we actually have a VALID Cloud DB URL
+const isProduction = (process.env.NODE_ENV === 'production') && !!dbUrl;
 
 console.log(`[Config] Running in ${isProduction ? 'PRODUCTION (Cloud DB)' : 'DEVELOPMENT (SQLite)'} mode.`);
 
