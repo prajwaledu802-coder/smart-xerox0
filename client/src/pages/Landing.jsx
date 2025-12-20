@@ -24,7 +24,7 @@ const Landing = () => {
     return (
         <div className="min-h-screen bg-transparent md:bg-white dark:bg-transparent md:dark:bg-[#050505] text-gray-900 dark:text-white transition-colors duration-300 font-sans overflow-x-hidden selection:bg-blue-500/30">
             {/* HER HERO SECTION */}
-            <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+            <section className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center overflow-hidden py-12 md:py-0">
                 {/* Dynamic Background */}
                 <div className="absolute inset-0 w-full h-full pointer-events-none">
                     <div className="absolute top-0 left-0 w-full h-full bg-white dark:bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] dark:from-blue-900/20 dark:via-[#050505] dark:to-[#050505]"></div>
@@ -44,7 +44,7 @@ const Landing = () => {
                             <Star size={14} fill="currentColor" /> {t('rated_1') || 'Rated #1 Student Choice'}
                         </motion.div>
 
-                        <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-[1.1] text-gray-900 dark:text-white">
+                        <motion.h1 variants={itemVariants} className="text-4xl md:text-6xl lg:text-8xl font-black tracking-tighter mb-6 md:mb-8 leading-[1.1] text-gray-900 dark:text-white">
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-blue-800 to-gray-600 dark:from-white dark:via-gray-200 dark:to-gray-500">
                                 {t('printing_reimagined') || 'Printing Reimagined.'}
                             </span>
@@ -129,7 +129,7 @@ const Landing = () => {
             </section>
 
             {/* PRICING SECTION */}
-            <section id="pricing" className="py-32 relative bg-gray-50 dark:bg-transparent">
+            <section id="pricing" className="py-16 md:py-32 relative bg-gray-50 dark:bg-transparent">
                 <div className="container mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -224,7 +224,7 @@ const Landing = () => {
             </section>
 
             {/* FEATURES / SERVICES SECTION */}
-            <section className="py-24 bg-white dark:bg-[#0a0a0a]">
+            <section className="py-16 md:py-24 bg-white dark:bg-[#0a0a0a]">
                 <div className="container mx-auto px-6">
                     <div className="grid md:grid-cols-3 gap-12">
                         {[

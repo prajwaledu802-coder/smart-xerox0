@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial, Float, Stars } from '@react-three/drei';
 
@@ -59,6 +59,13 @@ const DarkScene = () => {
 
 const LiveBackground = () => {
     const { theme } = useThemeStore();
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     if (theme === 'light') {
         return (
@@ -66,6 +73,14 @@ const LiveBackground = () => {
         );
     }
 
+    // Mobile: Static Dark Background (No 3D)
+    if (isMobile) {
+        return (
+            <div className="fixed inset-0 z-0 pointer-events-none bg-[#050510]"></div>
+        );
+    }
+
+    // PC: Full 3D Universe
     return (
         <div className="fixed inset-0 z-0 pointer-events-none">
             <Canvas camera={{ position: [0, 0, 1] }}>
