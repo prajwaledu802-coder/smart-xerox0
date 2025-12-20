@@ -1,3 +1,4 @@
+import Link from 'next/link'; // Not used but ensuring no nextjs residuals
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import PdfEditor from '../components/PdfEditor';
 import WordEditor from '../components/WordEditor';
+import BottomNav from '../components/BottomNav'; // Added Import
 
 import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
@@ -305,7 +307,7 @@ const Order = () => {
                 </motion.h1>
 
                 {/* --- MAIN SWIPE LAYOUT (Mobile: Flex Row, Desktop: Grid) --- */}
-                <div className="flex md:grid md:grid-cols-12 gap-0 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide pb-8 -mx-4 md:mx-0">
+                <div className="flex md:grid md:grid-cols-12 gap-0 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scrollbar-hide pb-8 -mx-4 md:mx-0">
 
                     {/* --- PANEL 1: ADD ITEM --- */}
                     <div ref={addItemRef} className="min-w-full md:min-w-0 md:col-span-7 snap-center px-4 md:px-0 pt-16 md:pt-0"> {/* Added pt-16 for mobile tabs */}
