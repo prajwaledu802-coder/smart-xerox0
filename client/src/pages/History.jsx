@@ -104,8 +104,13 @@ const History = () => {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                {(order.orderStatus === 'ready' || order.orderStatus === 'delivered') && order.invoiceUrl ? (
-                                                    <a href={`http://localhost:5000${order.invoiceUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-end gap-1 text-purple-600 hover:text-purple-800 font-bold hover:underline">
+                                                {(order.orderStatus === 'ready' || order.orderStatus === 'delivered') ? (
+                                                    <a
+                                                        href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/invoice/${order.id}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center justify-end gap-1 text-purple-600 hover:text-purple-800 font-bold hover:underline"
+                                                    >
                                                         <Download size={14} /> Invoice
                                                     </a>
                                                 ) : <span className="text-gray-400 italic text-xs">Processing...</span>}

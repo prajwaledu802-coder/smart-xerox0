@@ -31,9 +31,9 @@ const Navbar = () => {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="fixed top-4 left-0 right-0 z-50 flex justify-center pointer-events-none"
+            className="fixed top-2 md:top-4 left-0 right-0 z-50 flex justify-center pointer-events-none"
         >
-            <div className="bg-white/70 dark:bg-black/60 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl rounded-full px-6 py-3 flex items-center gap-6 pointer-events-auto max-w-5xl w-full mx-4 justify-between">
+            <div className="bg-white/70 dark:bg-black/60 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl rounded-full px-4 py-2 md:px-6 md:py-3 flex items-center gap-3 md:gap-6 pointer-events-auto max-w-5xl w-full mx-2 md:mx-4 justify-between">
 
                 {/* Brand */}
                 <Link to="/" className="flex items-center gap-2 group">
