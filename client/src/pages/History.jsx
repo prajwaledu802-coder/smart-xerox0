@@ -106,7 +106,7 @@ const History = () => {
                                             <td className="px-6 py-4 text-right">
                                                 {(order.orderStatus === 'ready' || order.orderStatus === 'delivered') ? (
                                                     <a
-                                                        href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/invoice/${order.id}`}
+                                                        href={`${import.meta.env.VITE_API_URL || 'https://smart-xerox-backend.onrender.com'}/invoice/${order.id}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="flex items-center justify-end gap-1 text-purple-600 hover:text-purple-800 font-bold hover:underline"

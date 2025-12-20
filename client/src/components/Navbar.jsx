@@ -53,9 +53,9 @@ const Navbar = () => {
                             onClick={() => setShowLang(!showLang)}
                             className="flex items-center gap-2 bg-gray-100/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full py-1.5 pl-3 pr-3 text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors"
                         >
-                            <Globe size={14} className="text-blue-500" />
-                            <span>{i18n.language || "en"}</span>
-                            <ChevronDown size={14} className={`transition-transform duration-200 ${showLang ? 'rotate-180' : ''}`} />
+                            <Globe size={18} className="text-blue-500" />
+                            <span className="text-sm">{i18n.language || "en"}</span>
+                            <ChevronDown size={16} className={`transition-transform duration-200 ${showLang ? 'rotate-180' : ''}`} />
                         </button>
 
                         <AnimatePresence>
@@ -101,7 +101,7 @@ const Navbar = () => {
                             className="w-10 h-10 rounded-full bg-gray-100/50 dark:bg-white/5 flex items-center justify-center text-gray-600 dark:text-yellow-400 hover:bg-blue-50 dark:hover:bg-white/10 transition-all active:scale-95 z-10"
                             title="Toggle Theme"
                         >
-                            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                            {theme === 'light' ? <Moon size={22} strokeWidth={2.5} /> : <Sun size={22} strokeWidth={2.5} />}
                         </button>
 
                         <AnimatePresence>
@@ -140,13 +140,17 @@ const Navbar = () => {
                                     {user?.avatar ? (
                                         <img src={`http://localhost:5000${user.avatar}`} alt="Avatar" className="w-7 h-7 rounded-full object-cover" />
                                     ) : (
-                                        <div className="w-7 h-7 rounded-full bg-gradient-to-b from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-300">
-                                            <User size={14} />
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-b from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-300">
+                                            <User size={16} />
                                         </div>
                                     )}
-                                    <span className="text-xs font-bold text-gray-700 dark:text-gray-200 max-w-[80px] truncate hidden sm:block">
-                                        {user?.name?.split(' ')[0]}
-                                    </span>
+
+                                    <div className="hidden sm:block">
+                                        {/* Hide Name on very small screens, show only avatar */}
+                                        <span className="text-xs font-bold text-gray-700 dark:text-gray-200 max-w-[80px] truncate">
+                                            {user?.name?.split(' ')[0]}
+                                        </span>
+                                    </div>
                                 </Link>
 
                                 <button
@@ -154,7 +158,7 @@ const Navbar = () => {
                                     className="w-9 h-9 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/40 flex items-center justify-center transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800"
                                     title={t('nav_logout')}
                                 >
-                                    <LogOut size={16} />
+                                    <LogOut size={20} strokeWidth={2.5} />
                                 </button>
                             </div>
                         </>

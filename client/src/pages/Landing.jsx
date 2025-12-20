@@ -141,7 +141,7 @@ const Landing = () => {
                         <p className="text-gray-600 dark:text-gray-400 text-lg">{t('pricing_sub') || 'Transparent costs. No hidden fees. Student friendly.'}</p>
                     </motion.div>
 
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8 max-w-6xl mx-auto">
                         {/* Xerox B&W */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -226,7 +226,7 @@ const Landing = () => {
             {/* FEATURES / SERVICES SECTION */}
             <section className="py-16 md:py-24 bg-white dark:bg-[#0a0a0a]">
                 <div className="w-full md:container md:mx-auto px-3 md:px-6">
-                    <div className="grid md:grid-cols-3 gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12">
                         {[
                             { icon: Zap, title: t('lightning_fast') || "Lightning Fast", desc: t('fast_desc') || "Order online and collect before you even reach the shop." },
                             { icon: Shield, title: t('secure_payments') || "Secure Payments", desc: t('secure_desc') || "100% secure QR code and UPI payments integration." },
