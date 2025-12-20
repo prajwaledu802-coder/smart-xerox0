@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    /* Transparent Background to let 3D Scene show through */
+    @apply bg-transparent text-gray-800 transition-colors duration-300;
+  }
+
+  html.dark body {
+    @apply bg-transparent text-gray-100;
+  }
+}
+
+@layer components {
+
+  /* Glass Effect Utility */
+  .glass-panel {
+    @apply bg-white/70 dark:bg-black/60 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-xl;
+  }
+
+  /* 3D Card Effect (Refined for Glass) */
+  .card-3d {
+    @apply bg-[#e0e5ec] dark:bg-[#1a1c22] rounded-3xl transition-all duration-300;
+    box-shadow:
+      9px 9px 16px rgb(163, 177, 198, 0.6),
+      -9px -9px 16px rgba(255, 255, 255, 0.5);
+  }
+
+  .dark .card-3d {
+    box-shadow:
+      12px 12px 24px #121418,
+      -12px -12px 24px #22242c;
+  }
+
+  /* Floating 3D Element */
+  .float-3d {
+    @apply transform transition-transform duration-500 hover:-translate-y-2;
+    perspective: 1000px;
+  }
+
+  /* 3D Button */
+  .btn-3d {
+    @apply relative overflow-hidden rounded-xl font-bold transition-all duration-200 active:scale-95 flex items-center justify-center;
+    box-shadow:
+      6px 6px 10px 0 rgba(163, 177, 198, 0.5),
+      -6px -6px 10px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .dark .btn-3d {
+    box-shadow:
+      6px 6px 10px 0 rgba(0, 0, 0, 0.4),
+      -6px -6px 10px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .btn-3d-primary {
+    @apply bg-blue-600 text-white shadow-lg shadow-blue-500/40 border-b-4 border-blue-800 hover:border-blue-700 hover:bg-blue-500 active:border-b-0 active:translate-y-1;
+  }
+
+  /* Inner Shadow for Inputs */
+  .input-3d {
+    @apply w-full px-5 py-4 rounded-xl bg-[#e0e5ec] dark:bg-[#1a1c22] outline-none transition-all placeholder-gray-400 dark:placeholder-gray-600;
+    box-shadow:
+      inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7),
+      inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .dark .input-3d {
+    box-shadow:
+      inset 6px 6px 10px 0 rgba(0, 0, 0, 0.5),
+      inset -6px -6px 10px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Text 3D */
+  .text-3d {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .text-3d {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
