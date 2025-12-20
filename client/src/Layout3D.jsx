@@ -40,7 +40,7 @@ const Layout3D = ({ children }) => {
                         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                         exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
                         transition={{ duration: 0.5, ease: "circOut" }}
-                        className="container mx-auto px-4 py-8"
+                        className="w-full md:container md:mx-auto md:px-4 md:py-8"
                     >
                         {children}
                     </motion.main>

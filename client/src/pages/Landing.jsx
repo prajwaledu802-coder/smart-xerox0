@@ -22,7 +22,7 @@ const Landing = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#050505] text-gray-900 dark:text-white transition-colors duration-300 font-sans overflow-x-hidden selection:bg-blue-500/30">
+        <div className="min-h-screen bg-transparent md:bg-white dark:bg-transparent md:dark:bg-[#050505] text-gray-900 dark:text-white transition-colors duration-300 font-sans overflow-x-hidden selection:bg-blue-500/30">
             {/* HER HERO SECTION */}
             <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
                 {/* Dynamic Background */}

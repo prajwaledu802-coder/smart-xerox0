@@ -87,7 +87,7 @@ const Navbar = () => {
                                     animate={{ opacity: 1, y: 5, scale: 1 }}
                                     exit={{ opacity: 0, y: -5, scale: 0.9 }}
                                     transition={{ duration: 0.2 }}
-                                    className="absolute top-full mt-2 w-48 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 pointer-events-none"
+                                    className="hidden md:block absolute top-full mt-2 w-48 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 pointer-events-none"
                                 >
                                     {/* Arrow */}
                                     <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-gray-800 rotate-45 border-l border-t border-gray-100 dark:border-gray-700"></div>
@@ -136,7 +136,7 @@ const Navbar = () => {
                         </>
                     ) : (
                         <div className="flex items-center gap-3">
-                            <Link to="/login" className="text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
+                            <Link to="/login" className="hidden sm:block text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-blue-600 transition-colors">
                                 {t('nav_login')}
                             </Link>
                             <Link to="/signup" className="px-5 py-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all">
