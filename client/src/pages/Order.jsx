@@ -1,4 +1,3 @@
-```javascript
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -72,7 +71,7 @@ const Order = () => {
                     const loadingTask = pdfjsLib.getDocument(arrayBuffer);
                     const pdf = await loadingTask.promise;
                     realPageCount = pdf.numPages;
-                    toast.info(`Detected ${ realPageCount } pages(PDF).`);
+                    toast.info(`Detected ${realPageCount} pages(PDF).`);
                 } else if (selected.name.endsWith('.docx') || selected.name.endsWith('.doc')) {
                     // Advanced Heuristic: Word Count
                     try {
@@ -83,7 +82,7 @@ const Order = () => {
 
                         // Roughly 500 words per page (Standard Academic Page)
                         realPageCount = Math.max(1, Math.ceil(wordCount / 500));
-                        toast.info(`Estimated ~${ realPageCount } pages(${ wordCount } words).`);
+                        toast.info(`Estimated ~${realPageCount} pages(${wordCount} words).`);
                     } catch (mErr) {
                         console.warn("Mammoth count failed, falling back to size", mErr);
                         realPageCount = Math.ceil(selected.size / 100000);
@@ -216,14 +215,14 @@ const Order = () => {
     return (
         <div className="min-h-screen pt-24 pb-20 px-4 transition-colors duration-300">
             <PdfEditor
-                key={editorFile ? `edit - ${ editorFile.name } ` : 'edit-empty'}
+                key={editorFile ? `edit - ${editorFile.name} ` : 'edit-empty'}
                 file={editorFile}
                 isOpen={!!editorFile}
                 onClose={() => setEditorFile(null)}
                 onSave={handleSaveEditedFile}
             />
             <PdfEditor
-                key={previewFile ? `view - ${ previewFile.name } ` : 'view-empty'}
+                key={previewFile ? `view - ${previewFile.name} ` : 'view-empty'}
                 file={previewFile}
                 isOpen={!!previewFile}
                 onClose={() => setPreviewFile(null)}
@@ -232,7 +231,7 @@ const Order = () => {
 
             {/* Word Editor Modes */}
             <WordEditor
-                key={wordEditorFile ? `edit - word - ${ wordEditorFile.name } ` : 'edit-word'}
+                key={wordEditorFile ? `edit - word - ${wordEditorFile.name} ` : 'edit-word'}
                 file={wordEditorFile}
                 isOpen={!!wordEditorFile}
                 onClose={() => setWordEditorFile(null)}
@@ -240,7 +239,7 @@ const Order = () => {
                 onPageCountUpdate={(count) => setCurrentSettings(s => ({ ...s, pages: count }))}
             />
             <WordEditor
-                key={wordPreviewFile ? `view - word - ${ wordPreviewFile.name } ` : 'view-word'}
+                key={wordPreviewFile ? `view - word - ${wordPreviewFile.name} ` : 'view-word'}
                 file={wordPreviewFile}
                 isOpen={!!wordPreviewFile}
                 onClose={() => setWordPreviewFile(null)}
@@ -266,13 +265,13 @@ const Order = () => {
                     <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl mb-8">
                         <button
                             onClick={() => setActiveModule('pdf')}
-                            className={`flex - 1 py - 3 rounded - xl font - bold transition - all flex items - center justify - center gap - 2 ${ activeModule === 'pdf' ? 'bg-white shadow-md text-red-600' : 'text-gray-500 hover:text-gray-700' } `}
+                            className={`flex - 1 py - 3 rounded - xl font - bold transition - all flex items - center justify - center gap - 2 ${activeModule === 'pdf' ? 'bg-white shadow-md text-red-600' : 'text-gray-500 hover:text-gray-700'} `}
                         >
                             <FileText size={20} /> {t('pdf_module') || 'PDF Module'}
                         </button>
                         <button
                             onClick={() => setActiveModule('word')}
-                            className={`flex - 1 py - 3 rounded - xl font - bold transition - all flex items - center justify - center gap - 2 ${ activeModule === 'word' ? 'bg-white shadow-md text-blue-600' : 'text-gray-500 hover:text-gray-700' } `}
+                            className={`flex - 1 py - 3 rounded - xl font - bold transition - all flex items - center justify - center gap - 2 ${activeModule === 'word' ? 'bg-white shadow-md text-blue-600' : 'text-gray-500 hover:text-gray-700'} `}
                         >
                             <MessageCircle size={20} /> {t('doc_module') || 'Document Module'}
                         </button>
@@ -349,54 +348,54 @@ const Order = () => {
                                 </p>
                                 <a
                                     href={`https://wa.me/919916220476?text=${encodeURIComponent(`Hi I am ${user?.name || 'User'}. And want help with the Word document.`)}`}
-target = "_blank"
-rel = "noreferrer"
-className = "px-8 py-3 bg-[#25D366] text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-green-500/30 hover:scale-105 transition-all flex items-center gap-2"
-    >
-    <MessageCircle size={20} /> { t('chat_whatsapp') || 'Chat on WhatsApp' }
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="px-8 py-3 bg-[#25D366] text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-green-500/30 hover:scale-105 transition-all flex items-center gap-2"
+                                >
+                                    <MessageCircle size={20} /> {t('chat_whatsapp') || 'Chat on WhatsApp'}
                                 </a >
                             </div >
                         )}
                     </div >
-    <AnimatePresence>
-        {cart.map((item) => (
-            <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                key={item.id}
-                className="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl relative group border border-transparent hover:border-purple-500/30 transition-all"
-            >
-                <button
-                    onClick={() => removeFromCart(item.id)} // Changed to removeFromCart
-                    className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity transform hover:scale-110 z-10"
-                >
-                    <Trash2 size={12} />
-                </button>
+                    <AnimatePresence>
+                        {cart.map((item) => (
+                            <motion.div
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                key={item.id}
+                                className="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl relative group border border-transparent hover:border-purple-500/30 transition-all"
+                            >
+                                <button
+                                    onClick={() => removeFromCart(item.id)} // Changed to removeFromCart
+                                    className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity transform hover:scale-110 z-10"
+                                >
+                                    <Trash2 size={12} />
+                                </button>
 
-                <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-3 overflow-hidden">
-                        <div className="bg-white dark:bg-gray-700 p-2 rounded-lg">
-                            <FileText size={20} className="text-blue-500" />
-                        </div>
-                        <div>
-                            <h4 className="font-bold text-gray-800 dark:text-gray-100 truncate max-w-[150px]">{item.file.name}</h4> {/* Changed to item.file.name */}
-                            <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
-                                {item.printType} • {item.copies} copies • {item.sides === 'double' ? 'Double' : 'Single'} {/* Changed to item.sides */}
-                            </p>
-                        </div>
+                                <div className="flex items-start justify-between mb-2">
+                                    <div className="flex items-center gap-3 overflow-hidden">
+                                        <div className="bg-white dark:bg-gray-700 p-2 rounded-lg">
+                                            <FileText size={20} className="text-blue-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-gray-800 dark:text-gray-100 truncate max-w-[150px]">{item.file.name}</h4> {/* Changed to item.file.name */}
+                                            <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
+                                                {item.printType} • {item.copies} copies • {item.sides === 'double' ? 'Double' : 'Single'} {/* Changed to item.sides */}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span className="font-mono font-bold text-purple-600 dark:text-purple-400">₹{item.cost}</span> {/* Changed to item.cost */}
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
-                    <span className="font-mono font-bold text-purple-600 dark:text-purple-400">₹{item.cost}</span> {/* Changed to item.cost */}
-                </div>
-            </motion.div>
-        ))}
-    </div>
                 </motion.div >
 
             </div >
 
-    {/* Promotional / Professional Services Section */ }
-    < div className = "max-w-6xl mx-auto mb-20" >
+            {/* Promotional / Professional Services Section */}
+            < div className="max-w-6xl mx-auto mb-20" >
                 <div className="flex items-center gap-4 mb-8">
                     <div className="h-1 flex-1 bg-gradient-to-r from-transparent to-gray-300 dark:to-gray-700"></div>
                     <h3 className="text-2xl font-black text-gray-400 uppercase tracking-[0.2em] text-center">{t('premium_services') || 'Premium Services'}</h3>
