@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+```javascript
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/ui/Button';
@@ -71,7 +72,7 @@ const Order = () => {
                     const loadingTask = pdfjsLib.getDocument(arrayBuffer);
                     const pdf = await loadingTask.promise;
                     realPageCount = pdf.numPages;
-                    toast.info(`Detected ${realPageCount} pages (PDF).`);
+                    toast.info(`Detected ${ realPageCount } pages(PDF).`);
                 } else if (selected.name.endsWith('.docx') || selected.name.endsWith('.doc')) {
                     // Advanced Heuristic: Word Count
                     try {
@@ -82,7 +83,7 @@ const Order = () => {
 
                         // Roughly 500 words per page (Standard Academic Page)
                         realPageCount = Math.max(1, Math.ceil(wordCount / 500));
-                        toast.info(`Estimated ~${realPageCount} pages (${wordCount} words).`);
+                        toast.info(`Estimated ~${ realPageCount } pages(${ wordCount } words).`);
                     } catch (mErr) {
                         console.warn("Mammoth count failed, falling back to size", mErr);
                         realPageCount = Math.ceil(selected.size / 100000);
@@ -215,14 +216,14 @@ const Order = () => {
     return (
         <div className="min-h-screen pt-24 pb-20 px-4 transition-colors duration-300">
             <PdfEditor
-                key={editorFile ? `edit-${editorFile.name}` : 'edit-empty'}
+                key={editorFile ? `edit - ${ editorFile.name } ` : 'edit-empty'}
                 file={editorFile}
                 isOpen={!!editorFile}
                 onClose={() => setEditorFile(null)}
                 onSave={handleSaveEditedFile}
             />
             <PdfEditor
-                key={previewFile ? `view-${previewFile.name}` : 'view-empty'}
+                key={previewFile ? `view - ${ previewFile.name } ` : 'view-empty'}
                 file={previewFile}
                 isOpen={!!previewFile}
                 onClose={() => setPreviewFile(null)}
@@ -231,7 +232,7 @@ const Order = () => {
 
             {/* Word Editor Modes */}
             <WordEditor
-                key={wordEditorFile ? `edit-word-${wordEditorFile.name}` : 'edit-word'}
+                key={wordEditorFile ? `edit - word - ${ wordEditorFile.name } ` : 'edit-word'}
                 file={wordEditorFile}
                 isOpen={!!wordEditorFile}
                 onClose={() => setWordEditorFile(null)}
@@ -239,7 +240,7 @@ const Order = () => {
                 onPageCountUpdate={(count) => setCurrentSettings(s => ({ ...s, pages: count }))}
             />
             <WordEditor
-                key={wordPreviewFile ? `view-word-${wordPreviewFile.name}` : 'view-word'}
+                key={wordPreviewFile ? `view - word - ${ wordPreviewFile.name } ` : 'view-word'}
                 file={wordPreviewFile}
                 isOpen={!!wordPreviewFile}
                 onClose={() => setWordPreviewFile(null)}
@@ -265,13 +266,13 @@ const Order = () => {
                     <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl mb-8">
                         <button
                             onClick={() => setActiveModule('pdf')}
-                            className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeModule === 'pdf' ? 'bg-white shadow-md text-red-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`flex - 1 py - 3 rounded - xl font - bold transition - all flex items - center justify - center gap - 2 ${ activeModule === 'pdf' ? 'bg-white shadow-md text-red-600' : 'text-gray-500 hover:text-gray-700' } `}
                         >
                             <FileText size={20} /> {t('pdf_module') || 'PDF Module'}
                         </button>
                         <button
                             onClick={() => setActiveModule('word')}
-                            className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeModule === 'word' ? 'bg-white shadow-md text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`flex - 1 py - 3 rounded - xl font - bold transition - all flex items - center justify - center gap - 2 ${ activeModule === 'word' ? 'bg-white shadow-md text-blue-600' : 'text-gray-500 hover:text-gray-700' } `}
                         >
                             <MessageCircle size={20} /> {t('doc_module') || 'Document Module'}
                         </button>
@@ -348,201 +349,54 @@ const Order = () => {
                                 </p>
                                 <a
                                     href={`https://wa.me/919916220476?text=${encodeURIComponent(`Hi I am ${user?.name || 'User'}. And want help with the Word document.`)}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="px-8 py-3 bg-[#25D366] text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-green-500/30 hover:scale-105 transition-all flex items-center gap-2"
-                                >
-                                    <MessageCircle size={20} /> {t('chat_whatsapp') || 'Chat on WhatsApp'}
-                                </a>
-                            </div>
+target = "_blank"
+rel = "noreferrer"
+className = "px-8 py-3 bg-[#25D366] text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-green-500/30 hover:scale-105 transition-all flex items-center gap-2"
+    >
+    <MessageCircle size={20} /> { t('chat_whatsapp') || 'Chat on WhatsApp' }
+                                </a >
+                            </div >
                         )}
-                    </div>
-
-                    {/* Settings 3D Inputs */}
-                    <div className="grid grid-cols-2 gap-6 mb-8">
-                        <div>
-                            <label className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-3 block uppercase tracking-wider">{t('print_type') || 'Print Type'}</label>
-                            <div className="flex card-3d p-1 rounded-2xl">
-                                <button
-                                    onClick={() => setCurrentSettings(s => ({ ...s, printType: 'bw' }))}
-                                    className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${currentSettings.printType === 'bw' ? 'bg-gray-800 text-white shadow-lg' : 'text-gray-500 hover:text-gray-800'}`}
-                                >
-                                    <span className="block">B&W</span>
-                                    <span className="text-[10px] opacity-70">₹3/₹4</span>
-                                </button>
-                                <button
-                                    onClick={() => setCurrentSettings(s => ({ ...s, printType: 'color' }))}
-                                    className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${currentSettings.printType === 'color' ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg' : 'text-gray-500 hover:text-pink-500'}`}
-                                >
-                                    <span className="block">Color</span>
-                                    <span className="text-[10px] opacity-70">₹5/₹10</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-3 block uppercase tracking-wider">{t('sides') || 'Sides'}</label>
-                            <div className="flex card-3d p-1 rounded-2xl">
-                                <button
-                                    onClick={() => setCurrentSettings(s => ({ ...s, sides: 'single' }))}
-                                    className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${currentSettings.sides === 'single' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-blue-500'}`}
-                                >
-                                    <span className="block">Single</span>
-                                    <span className="text-[10px] opacity-70">Front Only</span>
-                                </button>
-                                <button
-                                    onClick={() => setCurrentSettings(s => ({ ...s, sides: 'double' }))}
-                                    className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${currentSettings.sides === 'double' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-blue-500'}`}
-                                >
-                                    <span className="block">Double</span>
-                                    <span className="text-[10px] opacity-70">Front & Back</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="col-span-2 grid grid-cols-2 gap-6">
-                            <div>
-                                <label className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-3 block uppercase tracking-wider">{t('copies') || 'Copies'}</label>
-                                <input
-                                    type="number"
-                                    min="1"
-                                    value={currentSettings.copies}
-                                    onChange={(e) => setCurrentSettings(s => ({ ...s, copies: parseInt(e.target.value) || 1 }))}
-                                    className="input-3d w-full font-bold text-gray-800 dark:text-white text-center"
-                                />
-                            </div>
-                            {/* Xerox / Special Request Link */}
-                            <div className="flex items-end">
-                                <a
-                                    href={`https://wa.me/919916220476?text=${encodeURIComponent(`Hi, I need Physical Xerox / Custom Order.`)}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="w-full py-3 bg-[#25D366] text-white rounded-xl font-bold text-sm shadow-md hover:shadow-green-500/40 hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
-                                >
-                                    <MessageCircle size={18} /> Need Xerox?
-                                </a>
-                            </div>
-                        </div>
-
-
-                        {/* Instructions Field - Added as requested */}
-                        <div className="col-span-2">
-                            <label className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-3 block uppercase tracking-wider flex items-center gap-2">
-                                <Info size={16} /> {t('special_instr') || 'Special Instructions'}
-                            </label>
-                            <textarea
-                                placeholder={t('instr_placeholder') || "E.g. Spiral Binding, Lamination, Print only odd pages..."}
-                                value={currentSettings.instructions || ''}
-                                onChange={(e) => setCurrentSettings(s => ({ ...s, instructions: e.target.value }))}
-                                className="input-3d w-full h-24 p-4 font-medium text-gray-800 dark:text-white resize-none text-sm bg-gray-50 dark:bg-gray-800"
-                            />
-                        </div>
-                    </div>
-
-                    <Button
-                        onClick={addToCart}
-                        disabled={!currentFile}
-                        className="w-full py-4 text-xl shadow-xl hover:-translate-y-1"
-                    >
-                        {t('add_items') || 'Add items'} (+ ₹{currentFile ? calculateItemCost(currentSettings) : 0})
-                    </Button>
-                </motion.div>
-
-                {/* Right Side: 3D List Summary */}
-                <motion.div
-                    initial={{ x: 20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    className="flex flex-col h-full"
+                    </div >
+    <AnimatePresence>
+        {cart.map((item) => (
+            <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                key={item.id}
+                className="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl relative group border border-transparent hover:border-purple-500/30 transition-all"
+            >
+                <button
+                    onClick={() => removeFromCart(item.id)} // Changed to removeFromCart
+                    className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity transform hover:scale-110 z-10"
                 >
-                    <div className="card-3d p-8 flex-1 flex flex-col relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
-                            <ShoppingCart size={200} />
+                    <Trash2 size={12} />
+                </button>
+
+                <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="bg-white dark:bg-gray-700 p-2 rounded-lg">
+                            <FileText size={20} className="text-blue-500" />
                         </div>
-
-                        <h2 className="text-2xl font-black mb-6 text-gray-800 dark:text-white flex items-center gap-3 relative z-10 text-3d">
-                            <ShoppingCart size={28} className="text-green-600" />
-                            {t('your_list') || 'Order List'}
-                        </h2>
-
-                        {error && (
-                            <div className="mb-4 p-4 bg-red-100 text-red-600 rounded-xl flex items-center gap-2 border border-red-200">
-                                <AlertCircle size={20} />
-                                <span className="font-semibold">{error}</span>
-                            </div>
-                        )}
-
-                        <div className="flex-1 overflow-y-auto min-h-[300px] space-y-4 mb-6 pr-2 relative z-10 custom-scrollbar">
-                            {cart.length === 0 ? (
-                                <div className="h-full flex flex-col items-center justify-center text-gray-400 opacity-60">
-                                    <ShoppingCart size={80} className="mb-4" />
-                                    <p className="font-bold text-lg">{t('no_orders') || 'Your list is empty'}</p>
-                                </div>
-                            ) : (
-                                <AnimatePresence>
-                                    {cart.map((item) => (
-                                        <motion.div
-                                            key={item.id}
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -20 }}
-                                            className="card-3d p-4 flex justify-between items-center group hover:bg-white dark:hover:bg-gray-700 transition"
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <div className="p-3 card-3d rounded-xl text-blue-600">
-                                                    <FileText size={20} />
-                                                </div>
-                                                <div>
-                                                    <p className="font-bold text-gray-800 dark:text-white text-sm max-w-[150px] truncate">{item.file.name}</p>
-                                                    <p className="text-xs text-gray-500 font-semibold capitalize">
-                                                        {item.printType} ({item.sides}) • {item.pages} pgs • {item.copies} copies
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4">
-                                                <p className="font-black text-gray-800 dark:text-white text-lg">₹{item.cost}</p>
-                                                <button
-                                                    onClick={() => removeFromCart(item.id)}
-                                                    className="text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 rounded-full transition-all"
-                                                >
-                                                    <Trash2 size={20} />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                            )}
-                        </div>
-
-                        {/* Footer */}
-                        <div className="pt-6 border-t-2 border-gray-200 dark:border-gray-700 relative z-10">
-                            <div className="flex justify-between items-center mb-6">
-                                <span className="text-gray-500 font-bold uppercase tracking-wider">{t('total_estimate') || 'Total'}</span>
-                                <span className="text-4xl font-black text-gray-800 dark:text-white text-3d">₹{calculateGrandTotal()}</span>
-                            </div>
-
-                            <div className="card-3d bg-blue-50 dark:bg-blue-900/10 p-5 mb-6 border border-blue-100 dark:border-blue-800">
-                                <div className="flex justify-between items-center text-blue-800 dark:text-blue-300">
-                                    <span className="font-bold text-sm uppercase">{t('advance_pay_label') || 'Advance to Pay (50%)'}</span>
-                                    <span className="font-black text-2xl">₹{Math.ceil(calculateGrandTotal() / 2)}</span>
-                                </div>
-                            </div>
-
-                            <Button
-                                onClick={handleSubmitOrder}
-                                disabled={cart.length === 0}
-                                isLoading={loading}
-                                className="w-full py-4 text-xl shadow-xl hover:-translate-y-1"
-                            >
-                                {t('submit_pay') || 'Submit & Pay'}
-                            </Button>
+                        <div>
+                            <h4 className="font-bold text-gray-800 dark:text-gray-100 truncate max-w-[150px]">{item.file.name}</h4> {/* Changed to item.file.name */}
+                            <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
+                                {item.printType} • {item.copies} copies • {item.sides === 'double' ? 'Double' : 'Single'} {/* Changed to item.sides */}
+                            </p>
                         </div>
                     </div>
-                </motion.div>
+                    <span className="font-mono font-bold text-purple-600 dark:text-purple-400">₹{item.cost}</span> {/* Changed to item.cost */}
+                </div>
+            </motion.div>
+        ))}
+    </div>
+                </motion.div >
 
-            </div>
+            </div >
 
-            {/* Promotional / Professional Services Section */}
-            <div className="max-w-6xl mx-auto mb-20">
+    {/* Promotional / Professional Services Section */ }
+    < div className = "max-w-6xl mx-auto mb-20" >
                 <div className="flex items-center gap-4 mb-8">
                     <div className="h-1 flex-1 bg-gradient-to-r from-transparent to-gray-300 dark:to-gray-700"></div>
                     <h3 className="text-2xl font-black text-gray-400 uppercase tracking-[0.2em] text-center">{t('premium_services') || 'Premium Services'}</h3>
@@ -592,8 +446,8 @@ const Order = () => {
                 <div className="mt-12 text-center">
                     <p className="text-4xl font-black text-gray-300 dark:text-gray-700 italic tracking-tight">{t('quality_quote') || '"Where Quality Meets Speed"'}</p>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

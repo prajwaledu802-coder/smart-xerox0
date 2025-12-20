@@ -310,18 +310,19 @@ const Dashboard = () => {
                         {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
                     </button>
 
-                    {/* Lang Toggle Mobile (Simple Cycle) */}
-                    <button
-                        onClick={() => {
-                            const langs = ['en', 'hi', 'kn'];
-                            const currentIdx = langs.indexOf(i18n.language) || 0;
-                            const next = langs[(currentIdx + 1) % langs.length];
-                            i18n.changeLanguage(next);
-                        }}
-                        className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-white font-bold text-xs uppercase"
-                    >
-                        {i18n.language || 'en'}
-                    </button>
+                    {/* Lang Toggle Mobile (Native Dropdown) */}
+                    <div className="relative">
+                        <select
+                            value={i18n.language || 'en'}
+                            onChange={(e) => i18n.changeLanguage(e.target.value)}
+                            className="appearance-none w-10 h-8 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-white font-bold text-xs uppercase text-center focus:outline-none border border-transparent focus:border-blue-500"
+                        >
+                            <option value="en">EN</option>
+                            <option value="hi">HI</option>
+                            <option value="kn">KN</option>
+                        </select>
+                        {/* Tiny indicator to show it's a dropdown if needed, but keeping it minimal as per 'clean' req */}
+                    </div>
 
                     <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                         <User size={18} className="text-gray-600 dark:text-gray-300" />
