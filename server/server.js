@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const path = require('path');
 const sequelize = require('./config/database');
+require('./models'); // Load models and associations before sync
 
 dotenv.config();
 
