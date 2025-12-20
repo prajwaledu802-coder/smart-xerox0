@@ -6,6 +6,7 @@ import useStore from '../store/useStore';
 import Button from '../components/ui/Button';
 import { FileText, Clock, CheckCircle, AlertCircle, Download, Plus, Home, Briefcase, User, TrendingUp, Users, ShieldCheck, ChevronRight, Wallet, MessageCircle, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import BottomNav from '../components/BottomNav';
 
 // --- Helper Components Defined FIRST to prevent hoisting/Reference Errors ---
 
@@ -116,21 +117,20 @@ const Footer = ({ t }) => (
 );
 
 const StatCard = ({ icon: Icon, label, value, subtext, color }) => (
-    <div className={`card-3d p-6 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 bg-${color}-50 dark:bg-${color}-900/10 border-l-4 border-${color}-500`}>
-        <div className={`absolute top-0 right-0 p-4 opacity-5 transform group-hover:scale-125 transition-transform duration-700 text-${color}-600`}>
-            {/* Safety check for Icon */}
-            {Icon && <Icon size={100} />}
+    <div className={`card-3d p-5 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-500 bg-${color}-50 dark:bg-${color}-900/10 border-l-4 border-${color}-500 min-w-[140px] md:min-w-0 h-full flex flex-col justify-between`}>
+        <div className={`absolute top-0 right-0 p-2 opacity-5 transform group-hover:scale-125 transition-transform duration-700 text-${color}-600`}>
+            {Icon && <Icon size={60} />}
         </div>
         <div className="relative z-10">
-            <div className="flex items-center gap-4 mb-6">
-                <div className={`p-4 card-3d rounded-2xl text-${color}-600 dark:text-${color}-400`}>
-                    {Icon && <Icon size={24} />}
+            <div className="flex items-center gap-2 mb-3">
+                <div className={`p-2 card-3d rounded-xl text-${color}-600 dark:text-${color}-400`}>
+                    {Icon && <Icon size={18} />}
                 </div>
-                <span className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider text-xs">{label}</span>
+                <span className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider text-[10px]">{label}</span>
             </div>
-            <h3 className="text-5xl font-black text-gray-800 dark:text-gray-100 mb-2">{value}</h3>
-            <p className={`text-${color}-600 dark:text-${color}-400 font-semibold flex items-center gap-2`}>
-                <TrendingUp size={16} /> {subtext}
+            <h3 className="text-2xl md:text-3xl font-black text-gray-800 dark:text-gray-100 mb-1">{value}</h3>
+            <p className={`text-${color}-600 dark:text-${color}-400 font-semibold flex items-center gap-1 text-xs`}>
+                <TrendingUp size={12} /> {subtext}
             </p>
         </div>
     </div>
@@ -289,11 +289,24 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="min-h-screen pt-24 px-4 md:px-8 pb-20 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto perspective-1000">
+        <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white pb-24 md:pb-10 md:pt-24 transition-colors duration-300">
 
-                {/* 3D Header */}
-                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            {/* --- MOBILE TOP BAR (Sticky) --- */}
+            <div className="md:hidden sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 px-4 py-3 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-black text-xs">SX</div>
+                    <span className="font-bold text-lg tracking-tight">Smart Xerox</span>
+                </div>
+                {/* Notification / Profile Placeholder */}
+                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    <User size={18} className="text-gray-600 dark:text-gray-300" />
+                </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 md:px-8">
+
+                {/* --- DESKTOP HEADER (Original) --- */}
+                <div className="hidden md:flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
                     <div>
                         <motion.h1
                             initial={{ opacity: 0, x: -50 }}
@@ -334,6 +347,19 @@ const Dashboard = () => {
                     </div>
                 </div>
 
+                {/* --- WELCOME & PRIMARY ACTION (Mobile) --- */}
+                <div className="md:hidden mt-4 mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                        Hello, {user?.name?.split(' ')[0]} 👋
+                    </h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Ready to print today?</p>
+
+                    <Button onClick={() => navigate('/order')} className="w-full py-4 text-base bg-gradient-to-r from-blue-600 to-purple-600 shadow-xl shadow-blue-500/30 rounded-xl">
+                        <Plus size={20} strokeWidth={3} className="mr-2" /> {t('newOrder') || 'New Order'}
+                    </Button>
+                </div>
+
+
                 {/* Content Area */}
                 <div className="min-h-[600px]">
                     {activeTab === 'home' && (
@@ -342,108 +368,95 @@ const Dashboard = () => {
                             animate="visible"
                             variants={variants}
                             transition={{ type: 'spring', damping: 20 }}
-                            className="space-y-10"
+                            className="space-y-8 md:space-y-10"
                         >
-                            {/* Actions */}
-                            <div className="flex justify-end">
-                                <Button onClick={() => navigate('/order')} className="gap-2 text-lg">
-                                    <Plus size={24} /> {t('newOrder') || 'New Order'}
-                                </Button>
+
+                            {/* 1. Stats Block (Horizontal Scroll on Mobile) */}
+                            <div className="flex overflow-x-auto pb-4 gap-4 md:grid md:grid-cols-4 md:gap-6 snap-x hide-scrollbar">
+                                <div className="min-w-[40vw] md:min-w-0 snap-center">
+                                    <StatCard
+                                        icon={FileText}
+                                        label={t('total_orders')}
+                                        value={stats?.totalOrders || 0}
+                                        color="purple"
+                                        subtext="Orders"
+                                    />
+                                </div>
+                                <div className="min-w-[40vw] md:min-w-0 snap-center">
+                                    <StatCard
+                                        icon={Wallet}
+                                        label={t('total_spent')}
+                                        value={`₹${stats?.totalSpent || 0}`}
+                                        color="blue"
+                                        subtext="Invested"
+                                    />
+                                </div>
+                                <div className="min-w-[40vw] md:min-w-0 snap-center">
+                                    <StatCard
+                                        icon={CheckCircle}
+                                        label={t('saved')}
+                                        value={`₹${stats?.saved || 0}`}
+                                        color="green"
+                                        subtext="Saved"
+                                    />
+                                </div>
+                                <div className="min-w-[40vw] md:min-w-0 snap-center">
+                                    <StatCard
+                                        icon={Users}
+                                        label="Community"
+                                        value="1.2k+"
+                                        color="orange"
+                                        subtext="Users"
+                                    />
+                                </div>
                             </div>
 
-                            {/* 1. Stats Block (Top Priority) */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <StatCard
-                                    icon={FileText}
-                                    label={t('total_orders')}
-                                    value={stats?.totalOrders || 0}
-                                    color="purple"
-                                    subtext="Lifetime Orders"
-                                />
-                                <StatCard
-                                    icon={Wallet}
-                                    label={t('total_spent')}
-                                    value={`₹${stats?.totalSpent || 0}`}
-                                    color="blue"
-                                    subtext="Total Invested"
-                                />
-                                <StatCard
-                                    icon={CheckCircle}
-                                    label={t('saved')}
-                                    value={`₹${stats?.saved || 0}`}
-                                    color="green"
-                                    subtext="Money Saved"
-                                />
-                                <StatCard
-                                    icon={Users}
-                                    label={t('trusted_users')}
-                                    value="1.2k+"
-                                    color="orange"
-                                    subtext="Community"
-                                />
-                            </div>
-
-                            {/* 3. Spending Graph (Enhanced Premium) */}
-                            <div className="card-3d p-8 relative overflow-hidden flex flex-col justify-between min-h-[400px]">
-                                <div className="mb-8 flex justify-between items-center z-10">
+                            {/* 3. Spending Graph (Simplified for Mobile) */}
+                            <div className="card-3d p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[400px]">
+                                <div className="mb-6 flex justify-between items-center z-10">
                                     <div>
-                                        <h3 className="text-2xl font-black text-gray-800 dark:text-gray-100 flex items-center gap-3">
-                                            <TrendingUp className="text-blue-600" size={28} />
-                                            {t('spending_analysis') || "Spending Analysis"}
+                                        <h3 className="text-xl md:text-2xl font-black text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                                            <TrendingUp className="text-blue-600" size={24} />
+                                            {t('spending_analysis') || "Spending"}
                                         </h3>
-                                        <p className="text-sm text-gray-500 mt-1 pl-10">Your last 7 days of activity</p>
+                                        <p className="text-xs md:text-sm text-gray-500 mt-1 pl-8">Last 7 Days</p>
                                     </div>
                                     <div className="flex gap-2">
-                                        <span className="text-xs font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-700">{t('last_7_days') || "Last 7 Days"}</span>
+                                        <div className="text-right">
+                                            <div className="text-xl font-bold dark:text-white">₹{(() => {
+                                                const raw = (graphData && graphData.raw) ? graphData.raw : [0, 0, 0, 0, 0, 0, 0];
+                                                return raw.reduce((a, b) => a + b, 0); // Total for week
+                                            })()}</div>
+                                            <div className="text-[10px] text-green-500">+12% vs last week</div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Graph Area with Grid Background */}
-                                <div className="relative flex-1 flex items-end justify-between gap-4 px-4 pb-2 z-10 w-full">
-                                    {/* Background Grid Lines */}
-                                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10">
-                                        {[...Array(5)].map((_, i) => (
-                                            <div key={i} className="w-full h-px bg-gray-500"></div>
-                                        ))}
-                                    </div>
-
-                                    {/* Data Logic with Fallback for Zero Data */}
+                                {/* Graph Area */}
+                                <div className="relative flex-1 flex items-end justify-between gap-2 md:gap-4 px-2 pb-2 z-10 w-full">
                                     {(() => {
                                         let values = (graphData && graphData.values) ? graphData.values : [0, 0, 0, 0, 0, 0, 0];
                                         let raw = (graphData && graphData.raw) ? graphData.raw : [0, 0, 0, 0, 0, 0, 0];
-
-                                        // If total sum is 0, use DEMO DATA to make it look good
                                         const sum = values.reduce((a, b) => a + b, 0);
                                         const isDemo = sum === 0;
 
                                         if (isDemo) {
                                             values = [30, 50, 40, 70, 60, 90, 80];
-                                            raw = [150, 250, 200, 350, 300, 450, 400]; // Mock amounts
+                                            raw = [150, 250, 200, 350, 300, 450, 400];
                                         }
 
                                         return values.map((h, i) => (
-                                            <div key={i} className="flex flex-col items-center gap-3 group flex-1 h-full justify-end">
-                                                {/* Explicit Height Container for Bar */}
-                                                <div className="relative w-full max-w-[50px] h-[200px] flex items-end border-b border-gray-100 dark:border-gray-700">
+                                            <div key={i} className="flex flex-col items-center gap-2 group flex-1 h-full justify-end">
+                                                <div className="relative w-full max-w-[40px] h-[150px] md:h-[200px] flex items-end">
                                                     <motion.div
-                                                        key={`bar-${i}-${isDemo ? 'demo' : 'live'}`} // Force re-render on mode switch
+                                                        key={`bar-${i}`}
                                                         initial={{ height: 0 }}
                                                         animate={{ height: `${h}%` }}
-                                                        transition={{ duration: 1.5, type: 'spring', bounce: 0.5, delay: i * 0.2 }} // Slower, more bouncy animation
-                                                        className={`w-full rounded-t-xl relative overflow-hidden min-h-[10px] shadow-lg ${isDemo ? 'bg-gradient-to-t from-gray-400 via-gray-300 to-gray-200 opacity-60' : 'bg-gradient-to-t from-blue-600 via-purple-500 to-pink-500 shadow-blue-500/30'}`}
-                                                    >
-                                                        {/* Shine Effect */}
-                                                        <div className="absolute inset-0 bg-gradient-to-tr from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                    </motion.div>
-
-                                                    {/* Floating Tooltip */}
-                                                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 bg-gray-900 text-white text-[10px] font-bold py-1 px-2 rounded-lg shadow-xl whitespace-nowrap z-20 pointer-events-none">
-                                                        {isDemo ? 'Demo: ' : ''}₹{raw[i]}
-                                                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-                                                    </div>
+                                                        className={`w-full rounded-t-sm md:rounded-t-xl relative overflow-hidden min-h-[6px] shadow-sm ${isDemo ? 'bg-gray-300 dark:bg-gray-700' : 'bg-gradient-to-t from-blue-600 via-purple-500 to-pink-500'}`}
+                                                    ></motion.div>
                                                 </div>
-                                                <span className="text-[10px] uppercase font-bold text-gray-400 group-hover:text-blue-600 transition-colors">
-                                                    {new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase">
+                                                    {new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'narrow' })}
                                                 </span>
                                             </div>
                                         ));
@@ -451,14 +464,14 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
-                            {/* 3. Recent Orders List */}
-                            <div className="card-3d overflow-hidden bg-white dark:bg-gray-800 rounded-2xl">
-                                <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
-                                    <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
+                            {/* 3. Recent Orders (Mobile: Card Stack, Desktop: Table) */}
+                            <div>
+                                <div className="flex justify-between items-center mb-4 px-1">
+                                    <h2 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                         <Clock size={20} className="text-blue-600" />
                                         {t('recent_orders') || 'Recent Orders'}
                                     </h2>
-                                    <Button onClick={() => navigate('/history')} variant="secondary" className="text-xs h-8">
+                                    <Button onClick={() => navigate('/history')} variant="ghost" className="text-xs h-8 text-blue-600">
                                         {t('view_all') || 'View All'}
                                     </Button>
                                 </div>
@@ -466,113 +479,106 @@ const Dashboard = () => {
                                 {loading ? (
                                     <div className="p-8 text-center text-gray-400">Loading...</div>
                                 ) : orders.length === 0 ? (
-                                    <div className="p-12 text-center text-gray-500">
+                                    <div className="p-12 text-center text-gray-500 bg-white dark:bg-gray-800 rounded-2xl">
                                         <p>{t('no_orders') || 'No orders yet'}</p>
-                                        <Button onClick={() => navigate('/order')} className="mt-4">{t('create_first_order') || 'Order Now'}</Button>
                                     </div>
                                 ) : (
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                                            <thead className="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-700 dark:text-gray-300">
-                                                <tr>
-                                                    <th className="px-6 py-4 font-bold tracking-wider">Order ID</th>
-                                                    <th className="px-6 py-4 font-bold tracking-wider">File / Name</th>
-                                                    <th className="px-6 py-4 font-bold tracking-wider">Status</th>
-                                                    <th className="px-6 py-4 font-bold tracking-wider text-right">Invoice</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                                                {orders.slice(0, 5).map(order => (
-                                                    <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
-                                                        <td className="px-6 py-4 font-mono font-medium text-gray-900 dark:text-white">
-                                                            #{order.id}
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <div className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]" title={order.fileName}>
-                                                                {order.fileName || 'Document'}
-                                                            </div>
-                                                            <div className="text-xs text-gray-400 mt-0.5">
-                                                                {new Date(order.createdAt).toLocaleDateString()}
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-4">
-                                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold capitalize 
-                                                                ${order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                                                                    order.orderStatus === 'ready' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                                                                        'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
-                                                                <span className={`w-1.5 h-1.5 rounded-full ${order.orderStatus === 'delivered' ? 'bg-green-500' : order.orderStatus === 'ready' ? 'bg-blue-500' : 'bg-yellow-500'}`}></span>
-                                                                {order.orderStatus || 'pending'}
-                                                            </span>
-                                                        </td>
-                                                        <td className="px-6 py-4 text-right">
-                                                            {(order.orderStatus === 'ready' || order.orderStatus === 'delivered') ? (
-                                                                <a
-                                                                    href={`http://localhost:5000/invoice/${order.id}`}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50 px-3 py-1.5 rounded-lg transition-all font-bold text-xs"
-                                                                >
-                                                                    <Download size={16} /> Download
-                                                                </a>
-                                                            ) : (
-                                                                <span className="text-gray-400 text-xs italic">Processing</span>
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <>
+                                        {/* Desktop Table */}
+                                        <div className="hidden md:block card-3d overflow-hidden bg-white dark:bg-gray-800 rounded-2xl">
+                                            <div className="overflow-x-auto">
+                                                <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                                                    <thead className="bg-gray-50 dark:bg-gray-700/50 text-xs uppercase text-gray-700 dark:text-gray-300">
+                                                        <tr>
+                                                            <th className="px-6 py-4 font-bold tracking-wider">Order ID</th>
+                                                            <th className="px-6 py-4 font-bold tracking-wider">File / Name</th>
+                                                            <th className="px-6 py-4 font-bold tracking-wider">Status</th>
+                                                            <th className="px-6 py-4 font-bold tracking-wider text-right">Invoice</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                                                        {orders.slice(0, 5).map(order => (
+                                                            <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                                                                <td className="px-6 py-4 font-mono font-medium text-gray-900 dark:text-white">#{order.id}</td>
+                                                                <td className="px-6 py-4">
+                                                                    <div className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{order.fileName || 'Document'}</div>
+                                                                </td>
+                                                                <td className="px-6 py-4">
+                                                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold capitalize 
+                                                                        ${order.orderStatus === 'delivered' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                                                            order.orderStatus === 'ready' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                                                                                'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
+                                                                        <span className={`w-1.5 h-1.5 rounded-full ${order.orderStatus === 'delivered' ? 'bg-green-500' : order.orderStatus === 'ready' ? 'bg-blue-500' : 'bg-yellow-500'}`}></span>
+                                                                        {order.orderStatus || 'pending'}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="px-6 py-4 text-right">
+                                                                    {(order.orderStatus === 'ready' || order.orderStatus === 'delivered') ? (
+                                                                        <a href={`http://localhost:5000/invoice/${order.id}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-bold text-xs"><Download size={16} /> Download</a>
+                                                                    ) : <span className="text-gray-400 text-xs italic">Processing</span>}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        {/* Mobile Card Stack */}
+                                        <div className="md:hidden space-y-3">
+                                            {orders.slice(0, 5).map(order => (
+                                                <div key={order.id} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 flex justify-between items-center">
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="font-mono text-xs text-gray-400">#{order.id}</span>
+                                                            <span className={`w-2 h-2 rounded-full ${order.orderStatus === 'delivered' ? 'bg-green-500' : order.orderStatus === 'ready' ? 'bg-blue-500' : 'bg-yellow-500'}`}></span>
+                                                        </div>
+                                                        <h4 className="font-bold text-sm text-gray-800 dark:text-white truncate max-w-[150px]">{order.fileName || 'Document'}</h4>
+                                                        <p className="text-xs text-gray-500 mt-1">{order.printType?.toUpperCase()} • ₹{order.amountTotal}</p>
+                                                    </div>
+                                                    <Button variant="secondary" className="h-8 px-3 text-xs" onClick={() => navigate('/history')}>
+                                                        View
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>
                                 )}
                             </div>
 
-                            {/* 4. Service Promo Cards (Bottom) */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t border-gray-200 dark:border-gray-800">
+                            {/* 4. Services (Horizontal on Desktop, List on Mobile) */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 pt-6 border-t border-gray-200 dark:border-gray-800">
                                 <PromoCard
                                     title={t('morning_express') || "Morning Express"}
-                                    desc={t('morning_desc') || "Order before 8 AM, Pickup by 10:00 AM."}
+                                    desc="Order < 8 AM, Pickup 10 AM."
                                     icon={Clock}
                                     color="orange"
-                                    tag={t('conditions_apply') || "Conditions Apply"}
+                                    tag="Fast"
                                 />
                                 <PromoCard
-                                    title={t('live_pdf_editor') || "Live PDF Editor"}
-                                    desc={t('live_pdf_desc') || "Edit, Rotate, Delete pages instantly."}
+                                    title={t('live_pdf_editor') || "PDF Editor"}
+                                    desc="Edit, Rotate, Delete pages."
                                     icon={FileText}
                                     color="blue"
                                     tag="New"
                                 />
                                 <PromoCard
-                                    title={t('glass_binding') || "Glass Sheet Binding"}
-                                    desc={t('glass_desc') || "Premium binding for valid documents."}
+                                    title={t('glass_binding') || "Binding"}
+                                    desc="Premium glass sheet binding."
                                     icon={Briefcase}
                                     color="purple"
-                                    tag="Available"
+                                    tag="Pro"
                                 />
                             </div>
 
-                            {/* Daily Quote Section (Moved to bottom as per flow, or kept as filler) */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="relative rounded-2xl p-8 overflow-hidden text-center mt-8"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 opacity-90"></div>
-                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
-                                <div className="relative z-10 text-white">
-                                    <h3 className="text-sm font-bold uppercase tracking-[0.2em] mb-3 opacity-90">{t('daily_quote') || "Daily Motivation"}</h3>
-                                    <p className="text-2xl md:text-3xl font-black leading-tight italic max-w-2xl mx-auto">
-                                        "{t(`quote_${quoteIndex + 1}`) || "technology is best when it brings people together."}"
-                                    </p>
-                                    <p className="mt-4 font-bold opacity-80">- {t(`quote_author_${quoteIndex + 1}`) || "Matt Mullenweg"}</p>
-                                </div>
-                            </motion.div>
+                            {/* Bottom Spacer for Nav */}
+                            <div className="h-12 md:h-0"></div>
                         </motion.div>
                     )}
 
                     {activeTab === 'services' && (
-                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="card-3d p-10">
-                            <h2 className="text-3xl font-black text-gray-800 dark:text-white mb-10 text-center text-3d">{t('our_services') || 'Our Services & Pricing'}</h2>
+                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="card-3d p-6 md:p-10">
+                            <h2 className="text-2xl md:text-3xl font-black text-gray-800 dark:text-white mb-6 md:mb-10 text-center text-3d">{t('our_services') || 'Our Services & Pricing'}</h2>
                             <div className="space-y-4">
                                 <ServiceRow t={t} name="bw_xerox" label="Xerox (B&W)" p1="₹2.00" p2="₹3.00" />
                                 <ServiceRow t={t} name="bw_print" label="Printouts (B&W)" p1="₹3.00" p2="₹4.00" />
@@ -582,50 +588,24 @@ const Dashboard = () => {
                         </motion.div>
                     )}
 
-                    {activeTab === 'profile' && (
-                        <div className="max-w-xl mx-auto">
-                            <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="card-3d p-12 text-center">
-                                <div className="w-32 h-32 card-3d rounded-full flex items-center justify-center mx-auto mb-8 border-4 border-[#e0e5ec] dark:border-[#2c3038]">
-                                    <User size={64} className="text-blue-600 dark:text-blue-400" />
-                                </div>
-                                <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">{user?.name}</h2>
-                                <p className="text-gray-500 dark:text-gray-400 mb-10">{user?.email || 'Student'}</p>
-                                <Button onClick={() => navigate('/profile')} className="w-full text-lg">
-                                    {t('go_profile') || 'Manage Profile'}
-                                </Button>
-                            </motion.div>
-                        </div>
-                    )}
-                    {activeTab === 'support' && (
-                        <div className="max-w-xl mx-auto">
-                            <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="card-3d p-12 text-center border-t-4 border-green-500">
-                                <div className="w-32 h-32 card-3d rounded-full flex items-center justify-center mx-auto mb-8 bg-green-50 dark:bg-green-900/20 text-green-600">
-                                    <Phone size={64} />
-                                </div>
-                                <h2 className="text-3xl font-black text-gray-800 dark:text-white mb-4">{t('contact_support') || 'Contact & Support'}</h2>
-                                <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
-                                    {t('need_help_desc') || 'Need help with an order? Want manual document formatting? Chat with us directly on WhatsApp.'}
-                                </p>
-                                <a
-                                    href={`https://wa.me/919916220476?text=${encodeURIComponent(`Hi I am ${user?.name || 'User'}. Need help with this.`)}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="block w-full py-4 bg-[#25D366] text-white rounded-xl font-bold text-xl shadow-lg hover:shadow-green-500/40 hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
-                                >
-                                    <MessageCircle size={24} /> {t('chat_whatsapp') || 'Chat on WhatsApp'}
-                                </a>
-                                <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-700">
-                                    <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t('support_hours') || 'Support Hours'}</p>
-                                    <p className="font-bold text-gray-800 dark:text-white mt-1">10:00 AM - 10:00 PM</p>
-                                </div>
-                            </motion.div>
+                    {/* Profile & Support Tabs (Simplified for Mobile) */}
+                    {(activeTab === 'profile' || activeTab === 'support') && (
+                        <div className="flex flex-col items-center justify-center p-10 text-center">
+                            <p className="text-gray-500">Redirecting to full profile page...</p>
+                            <Button onClick={() => navigate(activeTab === 'profile' ? '/profile' : '/dashboard')} className="mt-4">Go to {activeTab}</Button>
                         </div>
                     )}
                 </div>
 
-                {/* Footer */}
-                <Footer t={t} />
+                {/* Footer (Desktop Only) */}
+                <div className="hidden md:block">
+                    <Footer t={t} />
+                </div>
             </div>
+
+            {/* --- BOTTOM NAVIGATION (Mobile) --- */}
+            <BottomNav />
+
         </div>
     );
 };

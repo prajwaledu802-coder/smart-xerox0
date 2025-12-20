@@ -73,17 +73,15 @@ const LiveBackground = () => {
         );
     }
 
-    // Mobile: Static Dark Background (No 3D)
-    if (isMobile) {
-        return (
-            <div className="fixed inset-0 z-0 pointer-events-none bg-[#050510]"></div>
-        );
-    }
+    // Mobile: Static Dark Background (No 3D) -> CHANGED: User wants 3D in Dark Mode on Mobile
+    // If it's Light Mode, it's already handled above. 
+    // So if we are here, it's Dark Mode.
+    // We will Allow 3D on Mobile Dark Mode now.
 
-    // PC: Full 3D Universe
+    // PC & Mobile Dark Mode: Full 3D Universe
     return (
         <div className="fixed inset-0 z-0 pointer-events-none">
-            <Canvas camera={{ position: [0, 0, 1] }}>
+            <Canvas camera={{ position: [0, 0, 1] }} dpr={[1, 2]}> {/* dpr for better mobile sharpness */}
                 <DarkScene />
             </Canvas>
         </div>
