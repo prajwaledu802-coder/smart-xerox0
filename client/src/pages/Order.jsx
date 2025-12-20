@@ -1,4 +1,4 @@
-import Link from 'next/link'; // Not used but ensuring no nextjs residuals
+
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
