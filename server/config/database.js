@@ -1,10 +1,19 @@
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
-const isProduction = process.env.NODE_ENV === 'production' || process.env.DATABASE_URL;
+const getDatabaseUrl = () => {
+    let url = process.env.DATABASE_URL;
+    if (!url) return null;
+    // Clean up quotes if user accidentally pasted them
+    url = url.trim().replace(/^['"]|['"]$/g, '');
+    return url;
+};
 
-const sequelize = isProduction && process.env.DATABASE_URL
-    ? new Sequelize(process.env.DATABASE_URL, {
+const dbUrl = getDatabaseUrl();
+const isProduction = process.env.NODE_ENV === 'production' || !!dbUrl;
+
+const sequelize = isProduction && dbUrl
+    ? new Sequelize(dbUrl, {
         dialect: 'postgres',
         protocol: 'postgres',
         logging: false,
