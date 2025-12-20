@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import useStore from '../store/useStore';
 import Button from '../components/ui/Button';
-import { FileText, Clock, CheckCircle, AlertCircle, Download, Plus, Home, Briefcase, User, TrendingUp, Users, ShieldCheck, ChevronRight, Wallet, MessageCircle, Phone } from 'lucide-react';
+import { Plus, Home, Briefcase, User, FileText, Wallet, CheckCircle, TrendingUp, Clock, Download, MessageCircle, Phone, Sun, Moon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import BottomNav from '../components/BottomNav';
+import useThemeStore from '../store/useThemeStore';
+import i18n from '../i18n';
 
 // --- Helper Components Defined FIRST to prevent hoisting/Reference Errors ---
 
@@ -209,6 +211,7 @@ const OrderCard = ({ order, t }) => {
 const Dashboard = () => {
     const { t } = useTranslation();
     const { user } = useStore();
+    const { theme, toggleTheme } = useThemeStore();
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -297,9 +300,32 @@ const Dashboard = () => {
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-black text-xs">SX</div>
                     <span className="font-bold text-lg tracking-tight">Smart Xerox</span>
                 </div>
-                {/* Notification / Profile Placeholder */}
-                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                    <User size={18} className="text-gray-600 dark:text-gray-300" />
+
+                <div className="flex items-center gap-3">
+                    {/* Theme Toggle Mobile */}
+                    <button
+                        onClick={toggleTheme}
+                        className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-yellow-400"
+                    >
+                        {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+                    </button>
+
+                    {/* Lang Toggle Mobile (Simple Cycle) */}
+                    <button
+                        onClick={() => {
+                            const langs = ['en', 'hi', 'kn'];
+                            const currentIdx = langs.indexOf(i18n.language) || 0;
+                            const next = langs[(currentIdx + 1) % langs.length];
+                            i18n.changeLanguage(next);
+                        }}
+                        className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-white font-bold text-xs uppercase"
+                    >
+                        {i18n.language || 'en'}
+                    </button>
+
+                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                        <User size={18} className="text-gray-600 dark:text-gray-300" />
+                    </div>
                 </div>
             </div>
 
@@ -344,6 +370,10 @@ const Dashboard = () => {
                                 <span className="hidden sm:inline">{tab.label}</span>
                             </button>
                         ))}
+                        {/* Desktop New Order Button in Header */}
+                        <button onClick={() => navigate('/order')} className="ml-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl shadow-lg shadow-blue-500/30 font-bold flex items-center gap-2 hover:scale-105 transition-transform">
+                            <Plus size={20} /> {t('newOrder') || 'New Order'}
+                        </button>
                     </div>
                 </div>
 
