@@ -21,7 +21,7 @@ const upload = multer({ storage });
 router.post('/verify', upload.single('screenshot'), async (req, res) => {
     const { orderId, amount, transactionId, method } = req.body;
     try {
-        const order = await Order.findByPk(orderId);
+        const order = await Order.findById(orderId);
         if (!order) return res.status(404).json({ error: 'Order not found' });
 
         if (method === 'cash') {
@@ -30,7 +30,7 @@ router.post('/verify', upload.single('screenshot'), async (req, res) => {
             order.instructions = (order.instructions || '') + ' [CoD Selected]';
             await order.save();
 
-            // Optionally create a payment record for tracking "promised" payment or just skip
+            // Optionally create a payment record
             await Payment.create({
                 orderId,
                 amount: 0,
@@ -44,7 +44,7 @@ router.post('/verify', upload.single('screenshot'), async (req, res) => {
         // Online / UPI Flow
         let finalTxnId = transactionId || `TXN-${Date.now()}`;
 
-        // If screenshot uploaded, append to txnId for reference or log it
+        // If screenshot uploaded
         if (req.file) {
             console.log("Payment Screenshot:", req.file.path);
             finalTxnId += ` | IMG: /uploads/${req.file.filename}`;

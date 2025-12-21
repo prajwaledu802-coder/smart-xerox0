@@ -26,10 +26,10 @@ router.post('/signup', upload.single('avatar'), async (req, res) => {
         const { name, email, mobile, password } = req.body;
 
         // Check existing
-        const existingEmail = await User.findOne({ where: { email } });
+        const existingEmail = await User.findOne({ email });
         if (existingEmail) return res.status(400).json({ success: false, error: 'Email already exists' });
 
-        const existingMobile = await User.findOne({ where: { mobile } });
+        const existingMobile = await User.findOne({ mobile });
         if (existingMobile) return res.status(400).json({ success: false, error: 'Mobile number already exists' });
 
         // Hash Password
@@ -46,10 +46,11 @@ router.post('/signup', upload.single('avatar'), async (req, res) => {
 
         res.status(201).json({
             success: true,
-            user: { id: user.id, name: user.name, email: user.email, avatar: user.avatar },
-            token: generateToken(user.id)
+            user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar },
+            token: generateToken(user._id)
         });
     } catch (err) {
+        console.error("Signup Error:", err);
         res.status(500).json({ success: false, error: err.message });
     }
 });
@@ -61,7 +62,7 @@ router.post('/login', async (req, res) => {
         const { email, password } = req.body;
         console.log('Login Attempt:', { email, password }); // DEBUG
 
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ email });
         if (!user) return res.status(404).json({ success: false, error: 'User not found' });
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -69,8 +70,8 @@ router.post('/login', async (req, res) => {
 
         res.json({
             success: true,
-            user: { id: user.id, name: user.name, email: user.email, avatar: user.avatar, role: user.role },
-            token: generateToken(user.id)
+            user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, role: user.role },
+            token: generateToken(user._id)
         });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });

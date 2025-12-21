@@ -1,21 +1,22 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-// const Order = require('./Order'); // Moved to index.js
+const mongoose = require('mongoose');
 
-const Payment = sequelize.define('Payment', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+const PaymentSchema = new mongoose.Schema({
+    orderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+        required: true
     },
-    amount: { type: DataTypes.FLOAT, allowNull: false },
-    method: { type: DataTypes.STRING, defaultValue: 'upi' },
-    transactionId: { type: DataTypes.STRING },
-});
+    amount: {
+        type: Number,
+        required: true
+    },
+    method: {
+        type: String,
+        default: 'upi'
+    },
+    transactionId: {
+        type: String
+    }
+}, { timestamps: true });
 
-// Associations
-// Associations moved to index.js
-// Payment.belongsTo(Order, { foreignKey: 'orderId' });
-// Order.hasMany(Payment, { foreignKey: 'orderId' });
-
-module.exports = Payment;
+module.exports = mongoose.model('Payment', PaymentSchema);

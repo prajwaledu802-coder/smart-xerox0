@@ -3,10 +3,12 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const path = require('path');
-const sequelize = require('./config/database');
-require('./models'); // Load models and associations before sync
+const connectDB = require('./config/db');
 
 dotenv.config();
+
+// Connect Database
+connectDB();
 
 const app = express();
 
@@ -34,21 +36,7 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('UNHANDLED REJECTION:', reason);
 });
 
-// Sync Database and Start Server
-console.log('Attempting to connect to database...');
-sequelize.authenticate()
-    .then(() => {
-        console.log('Database connection OK.');
-        console.log('Syncing models...');
-        return sequelize.sync({ alter: false }); // Disable alter to prevent potential schema locks for now
-    })
-    .then(() => {
-        console.log('Database Synced.');
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-            console.log(`http://localhost:${PORT}`);
-        });
-    })
-    .catch(err => {
-        console.error('SERVER STARTUP ERROR:', err);
-    });
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`http://localhost:${PORT}`);
+});

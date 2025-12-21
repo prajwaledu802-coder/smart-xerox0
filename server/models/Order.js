@@ -1,34 +1,50 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-// const User = require('./User'); // Moved to index.js
+const mongoose = require('mongoose');
 
-const Order = sequelize.define('Order', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+const OrderSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
-    // Legacy/Single Item fields (made nullable for backward compatibility)
-    fileUrl: { type: DataTypes.STRING, allowNull: true },
-    fileName: { type: DataTypes.STRING, allowNull: true },
-    printType: { type: DataTypes.ENUM('bw', 'color'), defaultValue: 'bw' },
-    pages: { type: DataTypes.INTEGER, allowNull: true },
-    copies: { type: DataTypes.INTEGER, defaultValue: 1 },
+    items: [{
+        fileUrl: String,
+        fileName: String,
+        printType: {
+            type: String,
+            enum: ['bw', 'color'],
+            default: 'bw'
+        },
+        pages: Number,
+        copies: {
+            type: Number,
+            default: 1
+        },
+        paperSize: {
+            type: String,
+            default: 'A4'
+        },
+        amount: Number
+    }],
+    amountTotal: {
+        type: Number,
+        required: true
+    },
+    amountPaid: {
+        type: Number,
+        default: 0
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['pending', 'partial', 'paid'],
+        default: 'pending'
+    },
+    orderStatus: {
+        type: String,
+        enum: ['received', 'printing', 'ready', 'delivered'],
+        default: 'received'
+    },
+    invoiceUrl: String,
+    instructions: String
+}, { timestamps: true });
 
-    // Order Level Fields
-    amountTotal: { type: DataTypes.FLOAT, allowNull: false },
-    amountPaid: { type: DataTypes.FLOAT, defaultValue: 0 },
-    paymentStatus: { type: DataTypes.ENUM('pending', 'partial', 'paid'), defaultValue: 'pending' },
-    orderStatus: { type: DataTypes.ENUM('received', 'printing', 'ready', 'delivered'), defaultValue: 'received' },
-    invoiceUrl: { type: DataTypes.STRING, allowNull: true },
-    instructions: { type: DataTypes.TEXT }
-});
-
-// Associations
-// Associations moved to index.js to prevent circular dependencies
-// Order.belongsTo(User, { foreignKey: 'userId' });
-// User.hasMany(Order, { foreignKey: 'userId' });
-// Order.hasMany(OrderItem, { foreignKey: 'orderId', as: 'items' });
-// OrderItem.belongsTo(Order, { foreignKey: 'orderId' });
-
-module.exports = Order;
+module.exports = mongoose.model('Order', OrderSchema);

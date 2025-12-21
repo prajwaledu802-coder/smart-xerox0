@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
-const OrderItem = require('../models/OrderItem');
 const multer = require('multer');
 const path = require('path');
 const { sendWhatsAppMessage } = require('../services/whatsapp');
-
 const verifyToken = require('../middleware/auth');
 
 // Multer Setup
@@ -24,11 +22,7 @@ const upload = multer({ storage });
 // @desc    Get logged in user's orders
 router.get('/myorders', verifyToken, async (req, res) => {
     try {
-        const orders = await Order.findAll({
-            where: { userId: req.user.id },
-            order: [['createdAt', 'DESC']],
-            include: 'items' // Simple include, or { model: OrderItem, as: 'items' } if alias defined
-        });
+        const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 });
         res.json({ success: true, orders });
     } catch (err) {
         console.error("MyOrders Error:", err);
@@ -45,9 +39,9 @@ router.post('/', upload.array('files'), async (req, res) => {
 
         let { userId, items, amountTotal, instruction } = req.body;
 
-        // Fix: Handle 'guest' or invalid userId to prevent FK constraint error
+        // Fix: Handle 'guest' or invalid userId
         if (userId === 'guest' || userId === 'null' || !userId) {
-            userId = null;
+            return res.status(400).json({ success: false, error: "User ID is required" });
         }
 
         let orderItemsData = [];
@@ -55,49 +49,35 @@ router.post('/', upload.array('files'), async (req, res) => {
             orderItemsData = JSON.parse(req.body.orderData);
         }
 
-        // Create the main Order
+        // Prepare embedded items array
+        const embeddedItems = req.files ? req.files.map((file, index) => {
+            const meta = orderItemsData[index] || {};
+            return {
+                fileUrl: `/uploads/${file.filename}`,
+                fileName: file.originalname,
+                printType: meta.printType || 'bw',
+                pages: meta.pages || 0,
+                copies: meta.copies || 1,
+                paperSize: meta.paperSize || 'A4',
+                amount: meta.amount || 0
+            };
+        }) : [];
+
+        // Create the Order with embedded items
         const order = await Order.create({
-            userId,
+            user: userId,
+            items: embeddedItems,
             amountTotal: parseFloat(amountTotal),
             instructions: instruction,
-            // For backward compatibility or dashboard display, we might set the first file's info
-            fileName: req.files && req.files.length > 0 ? `${req.files.length} Items` : 'Multi-Item Order',
-            fileUrl: '', // Not used for multi
-            printType: 'bw', // Default
-            pages: 0
+            amountPaid: 0,
+            paymentStatus: 'pending',
+            orderStatus: 'received'
         });
 
-        // Create Order Items
-        if (req.files && req.files.length > 0) {
-            const promises = req.files.map(async (file, index) => {
-                // We need to match file to its metadata. 
-                // Assumption: orderItemsData array matches the order of attached files.
-                // OR: orderItemsData contains 'fileIndex' to map to req.files[fileIndex]
-
-                const meta = orderItemsData[index] || {};
-
-                return OrderItem.create({
-                    orderId: order.id,
-                    fileUrl: `/uploads/${file.filename}`,
-                    fileName: file.originalname,
-                    printType: meta.printType || 'bw',
-                    pages: meta.pages || 0,
-                    copies: meta.copies || 1,
-                    amount: meta.amount || 0
-                });
-            });
-            await Promise.all(promises);
-        } else {
-            // Handle non-file items if any (like just binding service without file?)
-            // For now assuming files are mandatory for items
-        }
-
-
         // Notify Admin via WhatsApp (Server-Side)
-        // Hardcoded limit for demo, ideally from Env or DB
         const ADMIN_PHONE = '919916220476';
-        const itemsSummary = req.files ? `${req.files.length} Files` : 'Items';
-        const msg = `🔔 *New Order Received!* \nOrder #${order.id}\nUser: ${userId || 'Guest'}\nItems: ${itemsSummary}\nTotal: Rs.${amountTotal}\n\nCheck Admin Panel to Accept.`;
+        const itemsSummary = embeddedItems.length > 0 ? `${embeddedItems.length} Files` : 'Items';
+        const msg = `🔔 *New Order Received!* \nOrder #${order._id}\nUser: ${userId}\nItems: ${itemsSummary}\nTotal: Rs.${amountTotal}\n\nCheck Admin Panel to Accept.`;
 
         await sendWhatsAppMessage(ADMIN_PHONE, msg);
 
@@ -112,11 +92,7 @@ router.post('/', upload.array('files'), async (req, res) => {
 // @desc    Get user orders
 router.get('/user/:userId', async (req, res) => {
     try {
-        const orders = await Order.findAll({
-            where: { userId: req.params.userId },
-            order: [['createdAt', 'DESC']],
-            include: [{ model: OrderItem, as: 'items' }] // Include items
-        });
+        const orders = await Order.find({ user: req.params.userId }).sort({ createdAt: -1 });
         res.json({ success: true, orders });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -127,9 +103,7 @@ router.get('/user/:userId', async (req, res) => {
 // @desc    Get single order
 router.get('/:id', async (req, res) => {
     try {
-        const order = await Order.findByPk(req.params.id, {
-            include: ['User', { model: OrderItem, as: 'items' }]
-        });
+        const order = await Order.findById(req.params.id).populate('user', 'name email mobile');
         if (!order) return res.status(404).json({ error: 'Order not found' });
         res.json({ success: true, order });
     } catch (err) {
