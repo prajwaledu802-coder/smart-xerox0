@@ -311,11 +311,11 @@ const PdfEditor = ({ file, isOpen, onClose, onSave, readOnly = false }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-0 sm:p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-0 sm:p-4 transition-all duration-300">
             <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="bg-white dark:bg-gray-900 w-full h-full max-w-7xl max-h-screen sm:max-h-[95vh] rounded-none sm:rounded-3xl overflow-hidden flex flex-col shadow-2xl relative"
+                className="bg-white dark:bg-gray-900 w-full h-full sm:max-w-7xl sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-3xl overflow-hidden flex flex-col shadow-2xl relative"
             >
                 {/* Header */}
                 <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-800 shadow-sm z-20">
@@ -370,7 +370,7 @@ const PdfEditor = ({ file, isOpen, onClose, onSave, readOnly = false }) => {
                                     onDragEnd={handleDragEnd}
                                 >
                                     <SortableContext items={pdfInfo.pages} strategy={rectSortingStrategy}>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pb-20 z-10 p-4">
+                                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8 pb-20 z-10 p-2 sm:p-4">
                                             {pdfInfo.pages.map((pageNum) => (
                                                 <SortablePdfPage
                                                     key={pageNum}

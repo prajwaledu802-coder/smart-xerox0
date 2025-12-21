@@ -26,8 +26,11 @@ router.post('/signup', upload.single('avatar'), async (req, res) => {
         const { name, email, mobile, password } = req.body;
 
         // Check existing
-        const existingUser = await User.findOne({ where: { email } });
-        if (existingUser) return res.status(400).json({ success: false, error: 'Email already exists' });
+        const existingEmail = await User.findOne({ where: { email } });
+        if (existingEmail) return res.status(400).json({ success: false, error: 'Email already exists' });
+
+        const existingMobile = await User.findOne({ where: { mobile } });
+        if (existingMobile) return res.status(400).json({ success: false, error: 'Mobile number already exists' });
 
         // Hash Password
         const salt = await bcrypt.genSalt(10);

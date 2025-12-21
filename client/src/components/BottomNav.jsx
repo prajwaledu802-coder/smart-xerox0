@@ -40,8 +40,8 @@ const BottomNav = () => {
                             key={tab.id}
                             onClick={() => navigate(tab.path)}
                             className={`flex flex-col items-center justify-center w-full h-full gap-1 transition-colors ${isActive
-                                    ? 'text-blue-600 dark:text-blue-400'
-                                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
+                                ? 'text-black dark:text-white scale-110'
+                                : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
                                 }`}
                         >
                             <tab.icon size={24} strokeWidth={isActive ? 2.5 : 2} />

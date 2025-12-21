@@ -324,9 +324,9 @@ const Dashboard = () => {
                         {/* Tiny indicator to show it's a dropdown if needed, but keeping it minimal as per 'clean' req */}
                     </div>
 
-                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    <button onClick={() => navigate('/profile')} className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center active:scale-95 transition-transform">
                         <User size={18} className="text-gray-600 dark:text-gray-300" />
-                    </div>
+                    </button>
                 </div>
             </div>
 
