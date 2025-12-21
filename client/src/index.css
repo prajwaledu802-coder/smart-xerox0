@@ -30,7 +30,7 @@ body {
   color: var(--text-primary);
   @apply transition-colors duration-300;
 }
-}
+
 
 @layer components {
 
