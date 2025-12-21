@@ -33,12 +33,13 @@ process.on('unhandledRejection', (reason, promise) => {
 console.log('Attempting to sync SQLite database...');
 sequelize.sync({ alter: false })
     .then(() => {
-        console.log('Database Synced (WAL Mode).');
+        console.log('Database Synced.');
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
             console.log(`http://localhost:${PORT}`);
         });
     })
     .catch(err => {
-        console.error('SERVER STARTUP ERROR:', err);
+        console.error('SERVER STARTUP ERROR (Sync Failed):', err);
+        console.error('Stack:', err.stack);
     });
