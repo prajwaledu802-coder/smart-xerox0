@@ -234,18 +234,21 @@ const Landing = () => {
                         ].map((item, i) => (
                             <motion.div
                                 key={i}
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ delay: i * 0.1 }}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.1, duration: 0.5 }}
                                 viewport={{ once: true }}
-                                className="flex gap-4 items-start"
+                                className="card-3d p-8 relative overflow-hidden group hover:-translate-y-2"
                             >
-                                <div className="p-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-white">
-                                    <item.icon size={24} />
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <item.icon size={100} />
+                                </div>
+                                <div className="p-4 rounded-2xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 w-fit mb-6 shadow-sm">
+                                    <item.icon size={28} />
                                 </div>
                                 <div>
-                                    <h4 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{item.title}</h4>
-                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
+                                    <h4 className="text-2xl font-black mb-3 text-gray-800 dark:text-white">{item.title}</h4>
+                                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-medium">{item.desc}</p>
                                 </div>
                             </motion.div>
                         ))}

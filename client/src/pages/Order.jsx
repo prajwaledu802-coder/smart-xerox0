@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import PdfEditor from '../components/PdfEditor';
 import WordEditor from '../components/WordEditor';
+import Slider from '../components/ui/Slider';
+import AnimatedCounter from '../components/ui/AnimatedCounter';
 import BottomNav from '../components/BottomNav'; // Added Import
 
 import * as pdfjsLib from 'pdfjs-dist';
@@ -423,9 +425,16 @@ const Order = () => {
 
                                 {/* Right Side Options */}
                                 <div className="space-y-4">
-                                    {/* Copies */}
+                                    {/* Copies Slider */}
                                     <div>
-                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">{t('copies') || 'Copies'}</label>
+                                        <Slider
+                                            label={t('copies') || 'Copies'}
+                                            min={1}
+                                            max={50}
+                                            value={currentSettings.copies}
+                                            onChange={(val) => setCurrentSettings(s => ({ ...s, copies: val }))}
+                                            className="mb-4"
+                                        />
                                         <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
                                             <button onClick={() => setCurrentSettings(s => ({ ...s, copies: Math.max(1, s.copies - 1) }))} className="p-3 hover:bg-white dark:hover:bg-gray-700 rounded-lg transition-colors"><Minus size={16} /></button>
                                             <span className="flex-1 text-center font-bold text-lg">{currentSettings.copies}</span>
@@ -539,7 +548,9 @@ const Order = () => {
                                 <div className="flex justify-between items-end mb-6">
                                     <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Total Estimate</span>
                                     <div className="text-right">
-                                        <span className="text-4xl font-black text-gray-800 dark:text-white block leading-none">₹{calculateGrandTotal()}</span>
+                                        <span className="text-4xl font-black text-gray-800 dark:text-white block leading-none">
+                                            ₹<AnimatedCounter value={calculateGrandTotal()} />
+                                        </span>
                                         <span className="text-xs text-green-500 font-bold">Free Delivery applied</span>
                                     </div>
                                 </div>

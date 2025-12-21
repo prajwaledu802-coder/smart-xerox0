@@ -2,15 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    /* Transparent Background to let 3D Scene show through */
-    @apply bg-transparent text-gray-800 transition-colors duration-300;
-  }
+:root {
+  --bg-primary: #ffffff;
+  --text-primary: #1f2937;
+  --card-bg: #e0e5ec;
+  --card-shadow-light: rgba(163, 177, 198, 0.6);
+  --card-shadow-dark: rgba(255, 255, 255, 0.5);
+  --input-bg: #e0e5ec;
+  --input-shadow-light: rgba(163, 177, 198, 0.7);
+  --input-shadow-dark: rgba(255, 255, 255, 0.8);
+}
 
-  html.dark body {
-    @apply bg-transparent text-gray-100;
-  }
+html.dark {
+  --bg-primary: #050510;
+  --text-primary: #f3f4f6;
+  --card-bg: #1a1c22;
+  --card-shadow-light: #121418;
+  --card-shadow-dark: #22242c;
+  --input-bg: #1a1c22;
+  --input-shadow-light: rgba(0, 0, 0, 0.5);
+  --input-shadow-dark: rgba(255, 255, 255, 0.05);
+}
+
+body {
+  /* Transparent Background to let 3D Scene show through */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  @apply transition-colors duration-300;
+}
 }
 
 @layer components {
@@ -22,16 +41,18 @@
 
   /* 3D Card Effect (Refined for Glass) */
   .card-3d {
-    @apply bg-[#e0e5ec] dark:bg-[#1a1c22] rounded-3xl transition-all duration-300;
+    background-color: var(--card-bg);
+    @apply rounded-3xl transition-all duration-300;
     box-shadow:
-      9px 9px 16px rgb(163, 177, 198, 0.6),
-      -9px -9px 16px rgba(255, 255, 255, 0.5);
+      9px 9px 16px var(--card-shadow-light),
+      -9px -9px 16px var(--card-shadow-dark);
   }
 
   .dark .card-3d {
+    /* Shadow logic handled by vars now, but keeping specific overrides if needed or redundant */
     box-shadow:
-      12px 12px 24px #121418,
-      -12px -12px 24px #22242c;
+      12px 12px 24px var(--card-shadow-light),
+      -12px -12px 24px var(--card-shadow-dark);
   }
 
   /* Floating 3D Element */
@@ -60,16 +81,17 @@
 
   /* Inner Shadow for Inputs */
   .input-3d {
-    @apply w-full px-5 py-4 rounded-xl bg-[#e0e5ec] dark:bg-[#1a1c22] outline-none transition-all placeholder-gray-400 dark:placeholder-gray-600;
+    background-color: var(--input-bg);
+    @apply w-full px-5 py-4 rounded-xl outline-none transition-all placeholder-gray-400 dark:placeholder-gray-600;
     box-shadow:
-      inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7),
-      inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8);
+      inset 6px 6px 10px 0 var(--input-shadow-light),
+      inset -6px -6px 10px 0 var(--input-shadow-dark);
   }
 
   .dark .input-3d {
     box-shadow:
-      inset 6px 6px 10px 0 rgba(0, 0, 0, 0.5),
-      inset -6px -6px 10px 0 rgba(255, 255, 255, 0.05);
+      inset 6px 6px 10px 0 var(--input-shadow-light),
+      inset -6px -6px 10px 0 var(--input-shadow-dark);
   }
 
   /* Text 3D */

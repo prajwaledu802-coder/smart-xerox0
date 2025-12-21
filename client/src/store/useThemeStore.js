@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 const useThemeStore = create(
     persist(
         (set) => ({
-            theme: 'dark', // Default to dark for "Cyberpunk" feel first
+            theme: (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light',
             introPlayed: false,
 
             toggleTheme: () => set((state) => {
