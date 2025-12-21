@@ -323,13 +323,13 @@ const Order = () => {
                             <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl mb-6">
                                 <button
                                     onClick={() => setActiveModule('pdf')}
-                                    className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeModule === 'pdf' ? 'bg-white shadow-md text-red-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeModule === 'pdf' ? 'bg-black dark:bg-white text-white dark:text-black shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
                                     <FileText size={18} /> {t('pdf_module') || 'PDF'}
                                 </button>
                                 <button
                                     onClick={() => setActiveModule('word')}
-                                    className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeModule === 'word' ? 'bg-white shadow-md text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${activeModule === 'word' ? 'bg-black dark:bg-white text-white dark:text-black shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
                                     <MessageCircle size={18} /> {t('doc_module') || 'Word'}
                                 </button>

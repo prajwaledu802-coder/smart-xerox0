@@ -61,7 +61,7 @@ const PdfPage = ({ pdfDoc, pageNum, scale, rotation, isDeleted, onRotate, onDele
     return (
         <div className={`relative group bg-white transition-all duration-300 ${readOnly
             ? 'w-full shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] hover:shadow-[0_25px_60px_-12px_rgba(0,0,0,0.4)]'
-            : `card-3d p-4 flex flex-col items-center rounded-2xl ${isDeleted ? 'opacity-40 grayscale scale-95' : 'hover:scale-[1.02] hover:shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700'}`
+            : `card-3d p-2 flex flex-col items-center rounded-xl ring-1 ring-gray-200 dark:ring-gray-700 ${isDeleted ? 'opacity-40 grayscale scale-95' : 'hover:scale-[1.02] hover:shadow-2xl'}`
             }`}>
 
             {/* Page Number Badge */}
@@ -370,7 +370,7 @@ const PdfEditor = ({ file, isOpen, onClose, onSave, readOnly = false }) => {
                                     onDragEnd={handleDragEnd}
                                 >
                                     <SortableContext items={pdfInfo.pages} strategy={rectSortingStrategy}>
-                                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8 pb-20 z-10 p-2 sm:p-4">
+                                        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-6 pb-20 z-10 p-2 sm:p-4">
                                             {pdfInfo.pages.map((pageNum) => (
                                                 <SortablePdfPage
                                                     key={pageNum}
