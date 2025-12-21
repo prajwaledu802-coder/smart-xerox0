@@ -75,9 +75,7 @@ const Login = () => {
                 data.append('password', formData.password);
                 if (avatar) data.append('avatar', avatar);
 
-                const res = await api.post('/auth/signup', data, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                const res = await api.post('/auth/signup', data);
 
                 if (res.data.success) {
                     localStorage.setItem('token', res.data.token);
