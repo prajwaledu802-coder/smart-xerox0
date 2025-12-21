@@ -1,18 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const Order = require('../models/Order');
-const User = require('../models/User');
+const { Order, User, OrderItem } = require('../models');
 const { sendWhatsAppMessage } = require('../services/whatsapp');
 const { generateInvoice } = require('../services/invoiceGenerator');
 
-// @route   GET /admin/orders
-// @desc    Get all orders with User and Items
 router.get('/orders', async (req, res) => {
     try {
-        const orders = await Order.find()
-            .populate('user', 'id name email mobile')
-            .sort({ createdAt: -1 });
-
+        const orders = await Order.findAll({
+            include: [
+                { model: User, attributes: ['id', 'name', 'email', 'mobile'] },
+                { model: OrderItem, as: 'items' }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
         res.json({ success: true, orders });
     } catch (err) {
         console.error(err);
@@ -20,33 +20,30 @@ router.get('/orders', async (req, res) => {
     }
 });
 
-// @route   PATCH /admin/order/:id
-// @desc    Update order status
 router.patch('/order/:id', async (req, res) => {
-    const { status } = req.body; // 'ready' (Accepted), 'delivered'
+    const { status } = req.body;
     try {
-        const order = await Order.findById(req.params.id).populate('user');
+        const order = await Order.findByPk(req.params.id, {
+            include: [{ model: User }]
+        });
 
         if (!order) return res.status(404).json({ error: 'Order not found' });
 
         order.orderStatus = status;
         await order.save();
 
-        // WhatsApp Alert Logic
-        const userPhone = order.user?.mobile || 'Unknown';
-        const userName = order.user?.name || 'User';
+        const userPhone = order.User?.mobile || 'Unknown';
+        const userName = order.User?.name || 'User';
 
         if (status === 'ready') {
-            // Generate Invoice
-            // Note: generateInvoice needs to support Mongoose Order object
-            const invoicePath = await generateInvoice(order, order.user);
+            const invoicePath = await generateInvoice(order, order.User);
             order.invoiceUrl = invoicePath;
-            await order.save(); // Save invoice path
+            await order.save();
 
-            await sendWhatsAppMessage(userPhone, `Hi ${userName}, your order #${order._id} is ACCEPTED. Invoice: ${invoicePath}`);
+            await sendWhatsAppMessage(userPhone, `Hi ${userName}, your order #${order.id} is ACCEPTED. Invoice: ${invoicePath}`);
         } else if (status === 'delivered') {
-            await sendWhatsAppMessage(userPhone, `Hi ${userName}, your order #${order._id} is DELIVERED. Thank you!`);
-            console.log(`[ADMIN LOG] Order #${order._id} delivered at ${new Date().toISOString()}`);
+            await sendWhatsAppMessage(userPhone, `Hi ${userName}, your order #${order.id} is DELIVERED. Thank you!`);
+            console.log(`[ADMIN LOG] Order #${order.id} delivered at ${new Date().toISOString()}`);
         }
 
         res.json({ success: true, order });

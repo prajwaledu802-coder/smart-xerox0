@@ -6,7 +6,7 @@ const generateInvoice = (order, user) => {
     return new Promise((resolve, reject) => {
         try {
             const doc = new PDFDocument({ margin: 50 });
-            const filename = `Invoice-${order._id}-${Date.now()}.pdf`;
+            const filename = `Invoice-${order.id}-${Date.now()}.pdf`;
             const filePath = path.join(__dirname, '../uploads', filename); // Save to uploads for public access
             const stream = fs.createWriteStream(filePath);
 
@@ -19,7 +19,7 @@ const generateInvoice = (order, user) => {
 
             // Customer Details
             doc.text(`Invoice Date: ${new Date().toLocaleDateString()}`);
-            doc.text(`Order ID: #${order._id}`);
+            doc.text(`Order ID: #${order.id}`);
             doc.text(`Customer Name: ${user.name || 'Guest'}`);
             doc.text(`Customer ID: ${user.id || 'N/A'}`);
             doc.moveDown();

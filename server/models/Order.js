@@ -1,50 +1,25 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const OrderSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+const Order = sequelize.define('Order', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
-    items: [{
-        fileUrl: String,
-        fileName: String,
-        printType: {
-            type: String,
-            enum: ['bw', 'color'],
-            default: 'bw'
-        },
-        pages: Number,
-        copies: {
-            type: Number,
-            default: 1
-        },
-        paperSize: {
-            type: String,
-            default: 'A4'
-        },
-        amount: Number
-    }],
-    amountTotal: {
-        type: Number,
-        required: true
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
-    amountPaid: {
-        type: Number,
-        default: 0
-    },
-    paymentStatus: {
-        type: String,
-        enum: ['pending', 'partial', 'paid'],
-        default: 'pending'
-    },
-    orderStatus: {
-        type: String,
-        enum: ['received', 'printing', 'ready', 'delivered'],
-        default: 'received'
-    },
-    invoiceUrl: String,
-    instructions: String
-}, { timestamps: true });
+    // Keep these for backward compat or single-file orders, but mostly rely on Items
+    fileName: { type: DataTypes.STRING, allowNull: true },
 
-module.exports = mongoose.model('Order', OrderSchema);
+    amountTotal: { type: DataTypes.FLOAT, allowNull: false },
+    amountPaid: { type: DataTypes.FLOAT, defaultValue: 0 },
+    paymentStatus: { type: DataTypes.ENUM('pending', 'partial', 'paid'), defaultValue: 'pending' },
+    orderStatus: { type: DataTypes.ENUM('received', 'printing', 'ready', 'delivered'), defaultValue: 'received' },
+    invoiceUrl: { type: DataTypes.STRING, allowNull: true },
+    instructions: { type: DataTypes.TEXT }
+});
+
+module.exports = Order;
