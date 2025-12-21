@@ -39,7 +39,7 @@ const IntroManager = ({ onComplete }) => {
                 ease: "elastic.out(1, 0.3)"
             })
                 .to(boxRef.current, {
-                    scale: 50, // Expand to cover screen (transition effect)
+                    scale: 20, // Expand to cover screen (transition effect)
                     opacity: 0,
                     duration: 1,
                     ease: "power2.inOut"

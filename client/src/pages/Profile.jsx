@@ -6,6 +6,7 @@ import api from '../utils/api';
 import { User, Package, Lock, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 
 const Profile = () => {
     const { t } = useTranslation();
@@ -110,6 +111,34 @@ const Profile = () => {
                                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-gray-200">{user.mobile}</div>
                                     </div>
                                 </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm text-gray-500 uppercase font-semibold">Language & Region</label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {[
+                                            { code: 'en', label: 'English' },
+                                            { code: 'hi', label: 'Hindi' },
+                                            { code: 'te', label: 'Telugu' },
+                                            { code: 'ta', label: 'Tamil' },
+                                            { code: 'kn', label: 'Kannada' }
+                                        ].map(lang => (
+                                            <button
+                                                key={lang.code}
+                                                onClick={() => {
+                                                    i18n.changeLanguage(lang.code);
+                                                    useStore.getState().setLanguage(lang.code);
+                                                    toast.success(`Language changed to ${lang.label}`);
+                                                }}
+                                                className={`p-3 rounded-xl border text-sm font-bold transition-all ${i18n.language === lang.code
+                                                    ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-600 dark:text-blue-400'
+                                                    : 'bg-white dark:bg-black/20 border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                {lang.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                             </motion.div>
                         )}
 
@@ -170,7 +199,7 @@ const Profile = () => {
                     </AnimatePresence>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
