@@ -14,6 +14,11 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Health Check
+app.get('/', (req, res) => {
+    res.json({ status: 'running', database: process.env.DATABASE_URL ? 'PostgreSQL' : 'SQLite' });
+});
+
 app.use('/auth', require('./routes/auth'));
 app.use('/orders', require('./routes/orders'));
 app.use('/payment', require('./routes/payment'));
