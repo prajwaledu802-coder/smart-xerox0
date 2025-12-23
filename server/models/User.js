@@ -28,6 +28,11 @@ const User = sequelize.define('User', {
     avatar: {
         type: DataTypes.STRING
     },
+    firebaseUid: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: true
+    },
     role: {
         type: DataTypes.ENUM('user', 'admin'),
         defaultValue: 'user'

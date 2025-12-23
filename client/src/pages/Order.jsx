@@ -42,7 +42,9 @@ const Order = () => {
         printType: 'bw',
         sides: 'single', // New State for Sides
         copies: 1,
-        pages: 0
+        pages: 0,
+        glassSheetQty: 0, // NEW: Glass Sheet Counter
+        bindingQty: 0     // NEW: Binding Counter
     });
 
     // Editor State
@@ -137,7 +139,13 @@ const Order = () => {
             }
         }
 
-        return costPerSet * copies;
+        const baseCost = costPerSet * copies;
+
+        // Extras Cost
+        const glassCost = settings.glassSheetQty * 5;
+        const bindingCost = settings.bindingQty * 15;
+
+        return baseCost + glassCost + bindingCost;
     };
 
     const addToCart = () => {
@@ -154,7 +162,7 @@ const Order = () => {
 
         // Reset current selection
         setCurrentFile(null);
-        setCurrentSettings({ printType: 'bw', sides: 'single', copies: 1, pages: 0 });
+        setCurrentSettings({ printType: 'bw', sides: 'single', copies: 1, pages: 0, glassSheetQty: 0, bindingQty: 0 });
     };
 
     const removeFromCart = (id) => {
@@ -184,7 +192,12 @@ const Order = () => {
                 printType: item.printType,
                 copies: item.copies,
                 pages: item.pages,
-                amount: item.cost
+                printType: item.printType,
+                copies: item.copies,
+                pages: item.pages,
+                amount: item.cost,
+                glassSheets: item.glassSheetQty,
+                bindings: item.bindingQty
             }));
 
             formData.append('orderData', JSON.stringify(orderData));
@@ -456,6 +469,36 @@ const Order = () => {
                                 </div>
                             </div>
 
+                            {/* --- GLASS SHEET & BINDING EXTRAS --- */}
+                            <div className="grid grid-cols-2 gap-4 mt-4">
+                                {/* Glass Sheet Counter */}
+                                <div className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-3 border border-blue-100 dark:border-white/5">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <label className="text-xs font-bold text-blue-800 dark:text-blue-300 uppercase">Glass Sheet</label>
+                                        <span className="text-xs font-bold bg-white dark:bg-black px-2 py-0.5 rounded-full text-blue-600">₹5</span>
+                                    </div>
+                                    <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg p-1">
+                                        <button onClick={() => setCurrentSettings(s => ({ ...s, glassSheetQty: Math.max(0, s.glassSheetQty - 1) }))} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"><Minus size={14} /></button>
+                                        <span className="font-bold text-gray-800 dark:text-white">{currentSettings.glassSheetQty}</span>
+                                        <button onClick={() => setCurrentSettings(s => ({ ...s, glassSheetQty: s.glassSheetQty + 1 }))} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"><Plus size={14} /></button>
+                                    </div>
+                                </div>
+
+                                {/* Binding Counter */}
+                                <div className="bg-purple-50 dark:bg-purple-900/10 rounded-xl p-3 border border-purple-100 dark:border-white/5">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <label className="text-xs font-bold text-purple-800 dark:text-purple-300 uppercase">Binding</label>
+                                        <span className="text-xs font-bold bg-white dark:bg-black px-2 py-0.5 rounded-full text-purple-600">₹15</span>
+                                    </div>
+                                    <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg p-1">
+                                        <button onClick={() => setCurrentSettings(s => ({ ...s, bindingQty: Math.max(0, s.bindingQty - 1) }))} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"><Minus size={14} /></button>
+                                        <span className="font-bold text-gray-800 dark:text-white">{currentSettings.bindingQty}</span>
+                                        <button onClick={() => setCurrentSettings(s => ({ ...s, bindingQty: s.bindingQty + 1 }))} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"><Plus size={14} /></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-[10px] text-gray-400 mt-2 italic">* Binding includes 2 Glass Sheets + Taping + Staples.</p>
+
                             {/* Special Instructions */}
                             <div>
                                 <label className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 block uppercase tracking-wider">Instructions</label>
@@ -533,6 +576,12 @@ const Order = () => {
                                                             <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
                                                                 {item.printType === 'bw' ? 'B&W' : 'Color'} • {item.copies} copies • {item.sides === 'double' ? 'Double' : 'Single'}
                                                             </p>
+                                                            {(item.glassSheetQty > 0 || item.bindingQty > 0) && (
+                                                                <div className="flex gap-2 mt-1">
+                                                                    {item.glassSheetQty > 0 && <span className="text-[10px] bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded">+{item.glassSheetQty} Glass</span>}
+                                                                    {item.bindingQty > 0 && <span className="text-[10px] bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-1.5 py-0.5 rounded">+{item.bindingQty} Bound</span>}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <span className="font-mono font-bold text-purple-600 dark:text-purple-400">₹{item.cost}</span>
