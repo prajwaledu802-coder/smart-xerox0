@@ -7,8 +7,6 @@ import useStore from '../store/useStore';
 import api from '../utils/api'; // We might still use this to sync with backend
 import { Mail, Lock, User, Upload, ArrowRight, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { auth } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const Login = () => {
     const { t } = useTranslation();
@@ -70,103 +68,46 @@ const Login = () => {
                     return;
                 }
 
-                // Create User in Firebase
-                const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-                const user = userCredential.user;
+                // Create FormData for file upload
+                const data = new FormData();
+                data.append('name', formData.name);
+                data.append('email', formData.email);
+                data.append('mobile', formData.mobile);
+                data.append('password', formData.password);
+                if (avatar) data.append('avatar', avatar);
 
-                // Update Profile
-                await updateProfile(user, { displayName: formData.name });
+                // Send to backend signup endpoint
+                const res = await api.post('/auth/signup', data);
 
-                // Get Token to sync with backend
-                const token = await user.getIdToken();
-
-                // Send to backend to create user record/session
-                // We send formData to save extra fields like mobile, avatar if we upload it there
-                // For now, we'll try to sync with the backend
-                try {
-                    const data = new FormData();
-                    data.append('name', formData.name);
-                    data.append('email', formData.email);
-                    data.append('mobile', formData.mobile);
-                    data.append('firebaseUid', user.uid);
-                    if (avatar) data.append('avatar', avatar);
-
-                    // Note: We might need a new endpoint that accepts Firebase UID or Token
-                    // For now, let's assume we update the backend to handle this or just rely on Firebase
-                    // But to keep existing flow (redirect to dashboard, setUser), we do:
-
-                    const res = await api.post('/auth/firebase-sync', data, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (res.data.success) {
-                        localStorage.setItem('token', res.data.token);
-                        setUser(res.data.user);
-                    } else {
-                        // Fallback if backend fails, strictly use Firebase user object
-                        setUser({
-                            uid: user.uid,
-                            email: user.email,
-                            name: user.displayName,
-                            // Avatar might be missing here if backend didn't process it
-                        });
-                    }
-
-                } catch (backendError) {
-                    console.error("Backend Sync Error:", backendError);
-                    // Still proceed as Firebase Auth is successful
-                    setUser({
-                        uid: user.uid,
-                        email: user.email,
-                        name: user.displayName,
-                        photoURL: user.photoURL
-                    });
+                if (res.data.success) {
+                    localStorage.setItem('token', res.data.token);
+                    setUser(res.data.user);
+                    toast.success("Welcome to Smart Xerox!");
+                    navigate('/dashboard');
+                } else {
+                    toast.error(res.data.error || 'Signup failed');
                 }
-
-                toast.success("Welcome to Smart Xerox!");
-                navigate('/dashboard');
 
             } else {
                 // Login
-                const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
-                const user = userCredential.user;
+                const res = await api.post('/auth/login', {
+                    email: formData.email,
+                    password: formData.password
+                });
 
-                const token = await user.getIdToken();
-                localStorage.setItem('firebaseToken', token); // Store if needed for API calls
-
-                // Verify with backend
-                try {
-                    const res = await api.post('/auth/firebase-login', { token });
-                    if (res.data.success) {
-                        localStorage.setItem('token', res.data.token);
-                        setUser(res.data.user);
-                    } else {
-                        setUser({
-                            uid: user.uid,
-                            email: user.email,
-                            name: user.displayName,
-                            photoURL: user.photoURL
-                        });
-                    }
-                } catch (backendErr) {
-                    console.error("Backend Login Error:", backendErr);
-                    setUser({
-                        uid: user.uid,
-                        email: user.email,
-                        name: user.displayName,
-                        photoURL: user.photoURL
-                    });
+                if (res.data.success) {
+                    localStorage.setItem('token', res.data.token);
+                    setUser(res.data.user);
+                    toast.success("Welcome Back!");
+                    navigate('/dashboard');
+                } else {
+                    toast.error(res.data.error || 'Login failed');
                 }
-
-                toast.success("Welcome Back!");
-                navigate('/dashboard');
             }
         } catch (err) {
             console.error(err);
-            const msg = err.message.replace('Firebase: ', '');
-            toast.error(msg || 'Authentication Failed');
+            const errorMsg = err.response?.data?.error || err.message || 'Authentication Failed';
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }
