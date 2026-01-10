@@ -13,9 +13,6 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Serve static client files (for production)
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
 // Health Check
 app.get('/', (req, res) => {
     res.json({ status: 'running', database: process.env.DATABASE_URL ? 'PostgreSQL' : 'SQLite' });
@@ -31,11 +28,6 @@ async function startServer() {
         app.use('/payment', require('./routes/payment'));
         app.use('/invoice', require('./routes/invoice'));
         app.use('/admin', require('./routes/admin'));
-
-        // Serve client for all other routes (SPA fallback)
-        app.get('*', (req, res) => {
-            res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-        });
 
         const PORT = process.env.PORT || 5000;
 
